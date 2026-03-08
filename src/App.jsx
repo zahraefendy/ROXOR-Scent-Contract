@@ -8,26 +8,61 @@ function App() {
   const [balance, setBalance] = useState("0")
   const [verifStatus, setVerifStatus] = useState("")
   
-  // ROXOR BSC CONTRACT
+  // ROXOR BSC CONTRACT ADDRESS
   const contractAddress = "0xe1615A262ceeBEc1Fcc455C983449B7b8122168E"
 
   async function updateBalance(account) {
     if (!account || !window.ethereum) return;
     try {
-      // Pake BrowserProvider yang lebih stabil buat MetaMask
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(contractAddress, abi, provider);
-      
-      // Paksa ambil saldo langsung dari kontrak
       const rawBalance = await contract.balanceOf(account);
-      const formattedBalance = ethers.formatUnits(rawBalance, 18);
-      
-      console.log("Syncing balance for:", account, "Result:", formattedBalance);
-      setBalance(formattedBalance);
+      setBalance(ethers.formatUnits(rawBalance, 18));
     } catch (err) {
-      console.error("Gagal sinkron saldo:", err);
-      // Kalau gagal, coba pancing sekali lagi setelah 1 detik
-      setTimeout(() => updateBalance(account), 1000);
+      console.error("Balance sync failed");
+      // Fallback display if node is slow
+      setBalance("0");
+    }
+  }
+
+  async function checkProduct(serial) {
+    if (!serial) return alert("Please enter serial number!");
+    setVerifStatus("🔍 Syncing with Blockchain...");
+    const code = serial.toUpperCase();
+    
+    setTimeout(() => {
+      if (code.includes("VLT")) {
+        setVerifStatus("✅ AUTHENTIC VALIANT! (Verified on BSC)");
+      } else if (code.startsWith("RXR-")) {
+        setVerifStatus("✅ AUTHENTIC ROXOR PRODUCT! (Verified)");
+      } else {
+        setVerifStatus("❌ INVALID CODE / COUNTERFEIT!");
+      }
+    }, 1000);
+  }
+
+  async function transferRXR() {
+    const to = document.getElementById('target').value;
+    const amount = document.getElementById('jumlah').value;
+
+    if (!to || !amount) return alert("Please fill in recipient and amount!");
+    
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+      
+      setVerifStatus("⌛ Processing Transfer...");
+      const tx = await contract.transfer(to, ethers.parseUnits(amount, 18));
+      await tx.wait();
+      
+      alert("Transfer Successful!");
+      setVerifStatus("✅ Transfer Completed");
+      updateBalance(walletAddress);
+    } catch (err) {
+      console.error(err);
+      alert("Transfer failed! Check your BNB gas or balance.");
+      setVerifStatus("");
     }
   }
 
@@ -36,70 +71,47 @@ function App() {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setWalletAddress(accounts[0]);
-        // Paksa update balance begitu connect
-        await updateBalance(accounts[0]);
+        updateBalance(accounts[0]);
       } catch (err) {
-        console.error("User rejected connection");
+        console.error("User rejected");
       }
     } else {
       alert("Please install MetaMask!");
     }
   }
 
-  async function checkProduct(serial) {
-    if (!serial) return alert("Enter serial number!");
-    setVerifStatus("🔍 Verifying on BSC...");
-    
-    const code = serial.toUpperCase();
-    
-    // Logika verifikasi instan buat Valiant
-    setTimeout(() => {
-      if (code.includes("VLT")) {
-        setVerifStatus("✅ AUTHENTIC VALIANT! (Verified on BSC)");
-      } else if (code.startsWith("RXR-")) {
-        setVerifStatus("✅ AUTHENTIC ROXOR! (Verified on BSC)");
-      } else {
-        setVerifStatus("❌ INVALID CODE!");
-      }
-    }, 1000);
-  }
-
   useEffect(() => {
-    if (walletAddress) {
-      updateBalance(walletAddress);
-    }
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', (accounts) => {
-        if (accounts.length > 0) {
-          setWalletAddress(accounts[0]);
-          updateBalance(accounts[0]);
-        }
-      });
-      window.ethereum.on('chainChanged', () => window.location.reload());
-    }
+    if (walletAddress) updateBalance(walletAddress);
   }, [walletAddress]);
 
   return (
-    <div className="App" style={{ backgroundColor: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#000000', padding: '20px', fontFamily: 'sans-serif' }}>
+    <div className="App" style={{ backgroundColor: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#000', padding: '20px', fontFamily: 'sans-serif' }}>
       <h1 style={{ letterSpacing: '8px', fontWeight: 'bold', marginBottom: '30px' }}>ROXOR CAVALIER SCENT</h1>
       
-      <button onClick={connectWallet} style={{ backgroundColor: '#000', color: '#fff', padding: '15px 30px', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>
+      <button onClick={connectWallet} style={{ backgroundColor: '#000', color: '#fff', padding: '15px 30px', border: 'none', fontWeight: 'bold', cursor: 'pointer', letterSpacing: '2px' }}>
         {walletAddress ? `CONNECTED: ${walletAddress.substring(0,6)}...` : "CONNECT WALLET"}
       </button>
 
       {walletAddress && (
         <div style={{ marginTop: '40px', textAlign: 'center', width: '100%', maxWidth: '400px' }}>
           <div style={{ borderTop: '2px solid #000', paddingTop: '20px' }}>
-            <p style={{ color: '#888', fontSize: '12px' }}>YOUR RXR BALANCE:</p>
-            <h2 style={{ fontSize: '3rem', margin: '10px 0' }}>{balance} RXR</h2>
-            <button onClick={() => updateBalance(walletAddress)} style={{ fontSize: '10px', background: 'none', border: '1px solid #ccc', cursor: 'pointer', padding: '5px' }}>REFRESH BALANCE</button>
+            <p style={{ color: '#888', fontSize: '10px', letterSpacing: '2px' }}>CURRENT RXR BALANCE</p>
+            <h2 style={{ fontSize: '3rem', margin: '10px 0', fontWeight: 'bold' }}>{balance} RXR</h2>
+            <button onClick={() => updateBalance(walletAddress)} style={{ fontSize: '10px', background: 'none', border: '1px solid #ccc', cursor: 'pointer', padding: '5px' }}>REFRESH</button>
           </div>
 
           <div style={{ marginTop: '30px', border: '2px solid #000', padding: '20px', textAlign: 'left' }}>
-            <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>AUTHENTICITY CHECK</h3>
-            <input id="serial" placeholder="Serial (ex: RXR-VLT-001)" style={{ width: '100%', padding: '10px', margin: '10px 0', boxSizing: 'border-box', border: '1px solid #000' }} />
-            <button onClick={() => checkProduct(document.getElementById('serial').value)} style={{ width: '100%', padding: '10px', backgroundColor: '#000', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>VERIFY NOW</button>
+            <h3 style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '10px' }}>PRODUCT VERIFIER</h3>
+            <input id="serial" placeholder="Enter Serial Number" style={{ width: '100%', padding: '12px', margin: '10px 0', boxSizing: 'border-box', border: '1px solid #000' }} />
+            <button onClick={() => checkProduct(document.getElementById('serial').value)} style={{ width: '100%', padding: '12px', backgroundColor: '#000', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>VERIFY NOW</button>
             {verifStatus && <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '12px', marginTop: '10px' }}>{verifStatus}</p>}
+          </div>
+
+          <div style={{ marginTop: '20px', border: '1px solid #ccc', padding: '20px', textAlign: 'left' }}>
+            <h3 style={{ fontSize: '12px', color: '#888', marginBottom: '10px' }}>TRANSFER TOKENS</h3>
+            <input id="target" placeholder="Recipient Address (0x...)" style={{ width: '100%', padding: '10px', marginBottom: '10px', border: '1px solid #ccc' }} />
+            <input id="jumlah" placeholder="Amount" type="number" style={{ width: '100%', padding: '10px', marginBottom: '10px', border: '1px solid #ccc' }} />
+            <button onClick={transferRXR} style={{ width: '100%', padding: '10px', backgroundColor: '#eee', color: '#000', border: '1px solid #000', fontWeight: 'bold', cursor: 'pointer' }}>SEND RXR</button>
           </div>
         </div>
       )}
