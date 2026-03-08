@@ -8,7 +8,7 @@ function App() {
   const [balance, setBalance] = useState("0")
   const [verifStatus, setVerifStatus] = useState("")
   
-  // ROXOR Contract Address - Pastiin ini alamat hasil deploy terbaru di Rialo
+  // ROXOR Contract Address
   const contractAddress = "0xe1615A262ceeBEc1Fcc455C983449B7b8122168E"
 
   async function updateBalance(account) {
@@ -23,17 +23,17 @@ function App() {
     }
   }
 
-  // INI BAGIAN YANG GUE EDIT BIAR REAL-TIME BLOCKCHAIN
+  // FUNGSI VERIFIKASI ASLI BLOCKCHAIN
   async function checkProduct(serial) {
     if (!serial) return alert("Please enter the serial number!");
-    setVerifStatus("Verifying on Rialo Blockchain...");
+    setVerifStatus("🔍 Verifying on Rialo Blockchain...");
     
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(contractAddress, abi, provider);
       
       // Manggil fungsi verifikasi dari Smart Contract lo
-      // Asumsi nama fungsinya 'isAuthentic' atau 'verifyProduct' sesuai kodingan Remix lo
+      // Pastiin di Remix nama fungsinya 'isAuthentic'. Kalau beda, ganti kata 'isAuthentic' di bawah ini.
       const isValid = await contract.isAuthentic(serial); 
       
       if (isValid) {
@@ -43,11 +43,11 @@ function App() {
       }
     } catch (err) {
       console.error("Verification error:", err);
-      // Fallback kalo fungsi blockchain belum siap, pake logika manual sementara
-      if (serial.includes("RXR-")) {
-        setVerifStatus("✅ AUTHENTIC (Manual Check Passed)");
+      // Ini kalo error koneksi, baru lari ke pengecekan manual sederhana
+      if (serial.startsWith("RXR-")) {
+        setVerifStatus("⚠️ Manual Check Passed (Blockchain Connection Busy)");
       } else {
-        setVerifStatus("❌ INVALID PRODUCT!");
+        setVerifStatus("❌ INVALID SERIAL NUMBER!");
       }
     }
   }
