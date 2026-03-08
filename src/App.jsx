@@ -8,7 +8,7 @@ function App() {
   const [balance, setBalance] = useState("0")
   const [verifStatus, setVerifStatus] = useState("")
   
-  // GANTI ALAMAT DI BAWAH INI PAKE ALAMAT PALING BAWAH DI REMIX LO!
+  // ALAMAT KONTRAK ROXOR SUDAH GUE UPDATE LER
   const contractAddress = "0xe1615A262ceeBEc1Fcc455C983449B7b8122168E"
 
   async function updateBalance(account) {
@@ -32,11 +32,10 @@ function App() {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(contractAddress, abi, provider);
       
-      // Kita cek simbol token buat mastiin koneksi kontrak bener
       const symbol = await contract.symbol();
       
-      // Logika Verifikasi: Jika simbol bener RXR dan serial diawali RXR-
-      if (symbol === "RXR" && serial.toUpperCase().includes("RXR-VLT")) {
+      // Logika Verifikasi Otomatis
+      if (symbol === "RXR" && serial.toUpperCase().includes("VLT")) {
         setVerifStatus("✅ AUTHENTIC VALIANT! (Verified on Rialo)");
       } else if (symbol === "RXR" && serial.toUpperCase().startsWith("RXR-")) {
         setVerifStatus("✅ AUTHENTIC ROXOR PRODUCT! (Verified)");
@@ -45,7 +44,6 @@ function App() {
       }
     } catch (err) {
       console.error("Link Error:", err);
-      // Fallback kalo RPC sibuk tapi format bener
       if (serial.toUpperCase().startsWith("RXR-")) {
         setVerifStatus("⚠️ Format Benar (Blockchain Sedang Sibuk)");
       } else {
