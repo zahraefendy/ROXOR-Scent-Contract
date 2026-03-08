@@ -1,0 +1,42 @@
+/* App.css */
+.App {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1 {
+  font-size: 3rem;
+  letter-spacing: 5px;
+  color: #000;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+button {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 15px 30px;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: 0.3s;
+  border-radius: 0; /* Kotak tegas biar lebih mewah */
+}
+
+button:hover {
+  background-color: #333;
+}
+
+.balance-box {
+  margin-top: 40px;
+  padding: 20px;
+  border-top: 1px solid #eaeaea;
+}
