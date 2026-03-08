@@ -17,7 +17,6 @@ function App() {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(contractAddress, abi, provider);
       const rawBalance = await contract.balanceOf(account);
-      // Memastikan format 18 desimal agar muncul 1000000.0
       setBalance(ethers.formatUnits(rawBalance, 18));
     } catch (err) {
       console.error("Balance sync failed");
@@ -97,11 +96,16 @@ function App() {
 
         {walletAddress && (
           <div style={{ marginTop: '40px', textAlign: 'center', width: '100%', maxWidth: '400px' }}>
-            <div style={{ borderTop: '2px solid #000', paddingTop: '20px' }}>
-              <p style={{ color: '#888', fontSize: '10px', letterSpacing: '2px' }}>CURRENT RXR BALANCE</p>
-              {/* BAGIAN SALDO YANG TADI ILANG ADA DI SINI LER */}
-              <h2 style={{ fontSize: '3rem', margin: '10px 0', fontWeight: 'bold' }}>{balance} RXR</h2>
-              <button onClick={() => updateBalance(walletAddress)} style={{ fontSize: '10px', background: 'none', border: '1px solid #ccc', cursor: 'pointer', padding: '5px' }}>REFRESH</button>
+            <div style={{ borderTop: '2px solid #000', paddingTop: '20px', minHeight: '150px' }}>
+              <p style={{ color: '#888', fontSize: '10px', letterSpacing: '2px', marginBottom: '10px' }}>CURRENT RXR BALANCE</p>
+              
+              {/* EDITAN TAMPILAN SALDO: FORCE DISPLAY BIAR MUNCUL */}
+              <div style={{ display: 'block', margin: '20px 0' }}>
+                <span style={{ fontSize: '3.5rem', fontWeight: 'bold', color: '#000' }}>{balance}</span>
+                <span style={{ fontSize: '1.5rem', fontWeight: 'bold', marginLeft: '10px' }}>RXR</span>
+              </div>
+
+              <button onClick={() => updateBalance(walletAddress)} style={{ fontSize: '10px', background: 'none', border: '1px solid #ccc', cursor: 'pointer', padding: '5px', marginTop: '10px' }}>REFRESH BALANCE</button>
             </div>
 
             <div style={{ marginTop: '30px', border: '2px solid #000', padding: '20px', textAlign: 'left' }}>
@@ -123,7 +127,7 @@ function App() {
 
       {/* PANEL KANAN: ACTIVITY LOG */}
       <div style={{ flex: '1', backgroundColor: '#f4f4f4', padding: '60px 40px', display: 'flex', flexDirection: 'column' }}>
-        <h2 style={{ letterSpacing: '4px', borderBottom: '2px solid #000', paddingBottom: '15px', marginBottom: '30px', color: '#ccc' }}>ACTIVITY LOG</h2>
+        <h2 style={{ letterSpacing: '4px', borderBottom: '2px solid #000', paddingBottom: '15px', marginBottom: '30px', color: '#333' }}>ACTIVITY LOG</h2>
         
         {!walletAddress ? (
           <p style={{ color: '#888' }}>Connect wallet to view activity.</p>
