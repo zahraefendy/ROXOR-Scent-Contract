@@ -17,6 +17,7 @@ function App() {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(contractAddress, abi, provider);
       const rawBalance = await contract.balanceOf(account);
+      // Memastikan format 18 desimal agar muncul 1000000.0
       setBalance(ethers.formatUnits(rawBalance, 18));
     } catch (err) {
       console.error("Balance sync failed");
@@ -84,10 +85,9 @@ function App() {
   }, [walletAddress]);
 
   return (
-    /* CONTAINER UTAMA: PAKSA DISPLAY FLEX KE SAMPING */
     <div style={{ display: 'flex', flexDirection: 'row', width: '100vw', minHeight: '100vh', margin: 0, padding: 0, overflowX: 'hidden' }}>
       
-      {/* PANEL KIRI (60% LEBAR) */}
+      {/* PANEL KIRI: INFO & KONTROL */}
       <div style={{ flex: '1.5', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '50px', backgroundColor: '#fff', borderRight: '2px solid #000' }}>
         <h1 style={{ letterSpacing: '8px', fontWeight: 'bold', marginBottom: '30px' }}>ROXOR CAVALIER SCENT</h1>
         
@@ -99,6 +99,7 @@ function App() {
           <div style={{ marginTop: '40px', textAlign: 'center', width: '100%', maxWidth: '400px' }}>
             <div style={{ borderTop: '2px solid #000', paddingTop: '20px' }}>
               <p style={{ color: '#888', fontSize: '10px', letterSpacing: '2px' }}>CURRENT RXR BALANCE</p>
+              {/* BAGIAN SALDO YANG TADI ILANG ADA DI SINI LER */}
               <h2 style={{ fontSize: '3rem', margin: '10px 0', fontWeight: 'bold' }}>{balance} RXR</h2>
               <button onClick={() => updateBalance(walletAddress)} style={{ fontSize: '10px', background: 'none', border: '1px solid #ccc', cursor: 'pointer', padding: '5px' }}>REFRESH</button>
             </div>
@@ -120,9 +121,9 @@ function App() {
         )}
       </div>
 
-      {/* PANEL KANAN (RIWAYAT - 40% LEBAR) */}
+      {/* PANEL KANAN: ACTIVITY LOG */}
       <div style={{ flex: '1', backgroundColor: '#f4f4f4', padding: '60px 40px', display: 'flex', flexDirection: 'column' }}>
-        <h2 style={{ letterSpacing: '4px', borderBottom: '2px solid #000', paddingBottom: '15px', marginBottom: '30px' }}>ACTIVITY LOG</h2>
+        <h2 style={{ letterSpacing: '4px', borderBottom: '2px solid #000', paddingBottom: '15px', marginBottom: '30px', color: '#ccc' }}>ACTIVITY LOG</h2>
         
         {!walletAddress ? (
           <p style={{ color: '#888' }}>Connect wallet to view activity.</p>
