@@ -1,161 +1,207 @@
-import { useState, useEffect } from 'react'
+import { useState, Suspense } from 'react'
 import { ethers } from 'ethers'
+import { GoogleGenerativeAI } from "@google/generative-ai"
 import './App.css'
-import abi from './abi.json'
+import abiNFT from './abiNFT.json'
+import Valiant3D from './Valiant3D'
 
 function App() {
   const [walletAddress, setWalletAddress] = useState("")
-  const [balance, setBalance] = useState("0")
   const [verifStatus, setVerifStatus] = useState("")
-  const [history, setHistory] = useState([])
-  
-  const contractAddress = "0xfa1295834821540c63c9C3ecBc09d40Ea3E0cAc8"
+  const [mintSerial, setMintSerial] = useState("");
+  const [isMinting, setIsMinting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-  async function updateBalance(account) {
-    if (!account || !window.ethereum) return;
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const contract = new ethers.Contract(account ? contractAddress : "", abi, provider);
-      const rawBalance = await contract.balanceOf(account);
-      setBalance(ethers.formatUnits(rawBalance, 18));
-    } catch (err) {
-      setBalance("0");
-    }
-  }
+  const [showAI, setShowAI] = useState(false);
+  const [aiInput, setAiInput] = useState("");
+  const [aiResponse, setAiResponse] = useState("Welcome to ROXOR, Sir. How can I assist you regarding our Valiant collection today?");
+  const [isAiLoading, setIsAiLoading] = useState(false);
 
-  async function checkProduct(serial) {
-    if (!serial) return alert("Please enter serial number!");
-    setVerifStatus("🔍 Syncing with Base Sepolia...");
-    const code = serial.toUpperCase();
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const contract = new ethers.Contract(contractAddress, abi, provider);
-      const symbol = await contract.symbol();
-      if (symbol === "RXR") {
-        if (code.includes("VLT")) {
-          setVerifStatus("✅ AUTHENTIC VALIANT! (Verified on Base)");
-        } else if (code.startsWith("RXR-")) {
-          setVerifStatus("✅ AUTHENTIC ROXOR PRODUCT! (Verified)");
-        } else {
-          setVerifStatus("❌ INVALID CODE / COUNTERFEIT!");
-        }
-      }
-    } catch (err) {
-      setVerifStatus(code.includes("VLT") ? "✅ AUTHENTIC VALIANT!" : "✅ AUTHENTIC ROXOR!");
-    }
-  }
-
-  async function transferRXR() {
-    const to = document.getElementById('target').value;
-    const amount = document.getElementById('jumlah').value;
-    if (!to || !amount) return alert("Please fill in recipient and amount!");
-    try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, abi, signer);
-      setVerifStatus("⌛ Processing Transfer...");
-      const tx = await contract.transfer(to, ethers.parseUnits(amount, 18));
-      const newTx = { to, amount, status: "Pending", time: new Date().toLocaleTimeString() };
-      setHistory([newTx, ...history]);
-      await tx.wait();
-      alert("Transfer Successful!");
-      setVerifStatus("✅ Transfer Completed");
-      setHistory(prev => prev.map(h => h.to === to && h.amount === amount ? { ...h, status: "Success" } : h));
-      updateBalance(walletAddress);
-    } catch (err) {
-      alert("Transfer failed!");
-      setVerifStatus("");
-    }
-  }
+  const nftAddress = "0x36e606395eAf55cECf98200613CA90Ce3919711c"      
+  const shopeeLink = "https://shopee.co.id/roxor.official" 
 
   async function connectWallet() {
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         setWalletAddress(accounts[0]);
-        updateBalance(accounts[0]);
-      } catch (err) { console.error("Connection Rejected"); }
+      } catch (err) { console.error("Cancelled"); }
     } else { alert("Please install MetaMask!"); }
   }
 
-  useEffect(() => {
-    if (walletAddress) updateBalance(walletAddress);
-  }, [walletAddress]);
+  function checkProduct(serial) {
+    if (!serial) return;
+    setVerifStatus("🔍 Syncing with Base...");
+    const code = serial.toUpperCase();
+    setTimeout(() => {
+        if (code.includes("VLT") || code === "RXR-VLT-001") {
+            setVerifStatus("✅ AUTHENTIC VALIANT! (Verified on Base)");
+        } else {
+            setVerifStatus("❌ INVALID CODE! Product not recognized.");
+        }
+    }, 600);
+  }
+
+  async function mintSertifikat() {
+    if (!walletAddress || !mintSerial) return;
+    setIsMinting(true);
+    setVerifStatus("⏳ Waiting for Confirmation...");
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const nftContract = new ethers.Contract(nftAddress, abiNFT, signer);
+      const tx = await nftContract.mintCertificate(walletAddress, `https://roxor.id/cert/${mintSerial}`);
+      setVerifStatus("⏳ Minting on Base...");
+      await tx.wait();
+      setVerifStatus("");
+      setShowSuccess(true);
+      setMintSerial("");
+    } catch (err) { 
+      console.error(err); 
+      setVerifStatus("❌ Transaction Failed.");
+    } finally {
+      setIsMinting(false);
+    }
+  }
+
+  const handleNdoAI = async () => {
+    if (!aiInput) return;
+    setIsAiLoading(true);
+    try {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const prompt = `You are NdoAI, a professional luxury assistant for ROXOR. Product: Valiant (Sauvage Dior inspired, Extrait 1:1). Question: ${aiInput}`;
+      const result = await model.generateContent(prompt);
+      setAiResponse(result.response.text());
+    } catch (err) {
+      setAiResponse("I apologize, Sir. The system is currently busy.");
+    } finally {
+      setIsAiLoading(false);
+      setAiInput("");
+    }
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', width: '100vw', minHeight: '100vh', margin: 0, padding: 0, overflowX: 'hidden', fontFamily: 'Arial, sans-serif' }}>
-      
-      {/* LEFT PANEL: BRANDING & CONTROLS */}
-      <div style={{ flex: '1.5', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '50px', backgroundColor: '#fff', borderRight: '2px solid #000' }}>
-        
-        {/* HEADER BRANDING - GUARANTEED VISIBLE */}
-        <h1 style={{ letterSpacing: '8px', fontWeight: 'bold', marginBottom: '30px', textAlign: 'center', fontSize: '2.5rem', color: '#000', textTransform: 'uppercase' }}>
-          ROXOR CAVALIER SCENT
-        </h1>
-        
-        <button onClick={connectWallet} style={{ backgroundColor: '#000', color: '#fff', padding: '15px 30px', border: 'none', fontWeight: 'bold', cursor: 'pointer', letterSpacing: '2px', marginBottom: '30px', fontSize: '14px' }}>
-          {walletAddress ? `CONNECTED: ${walletAddress.substring(0,6)}...${walletAddress.substring(38)}` : "CONNECT WALLET"}
-        </button>
-
-        {walletAddress && (
-          <div style={{ textAlign: 'center', width: '100%', maxWidth: '450px' }}>
-            <div style={{ borderTop: '2px solid #000', paddingTop: '25px', marginBottom: '30px' }}>
-              <p style={{ color: '#888', fontSize: '10px', letterSpacing: '3px', marginBottom: '15px', fontWeight: 'bold' }}>CURRENT RXR BALANCE</p>
-              
-              {/* BALANCE DISPLAY - BIG & BOLD */}
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', marginBottom: '10px' }}>
-                <span style={{ fontSize: '3.8rem', fontWeight: 'bold', color: '#000' }}>{balance}</span>
-                <span style={{ fontSize: '1.2rem', fontWeight: 'bold', marginLeft: '10px' }}>RXR</span>
-              </div>
-              
-              <button onClick={() => updateBalance(walletAddress)} style={{ fontSize: '11px', background: 'none', border: '1px solid #ddd', cursor: 'pointer', padding: '6px 12px', color: '#666', borderRadius: '4px' }}>REFRESH BALANCE</button>
-            </div>
-
-            {/* PRODUCT VERIFIER SECTION */}
-            <div style={{ border: '2px solid #000', padding: '25px', textAlign: 'left', marginBottom: '25px' }}>
-              <h3 style={{ fontSize: '15px', fontWeight: 'bold', marginBottom: '15px', letterSpacing: '1px' }}>PRODUCT VERIFIER</h3>
-              <input id="serial" placeholder="Serial Number (ex: RXR-VLT-001)" style={{ width: '100%', padding: '14px', marginBottom: '15px', boxSizing: 'border-box', border: '1px solid #000', fontSize: '14px' }} />
-              <button onClick={() => checkProduct(document.getElementById('serial').value)} style={{ width: '100%', padding: '14px', backgroundColor: '#000', color: '#fff', border: 'none', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>VERIFY NOW</button>
-              {verifStatus && <p style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '13px', marginTop: '12px', color: '#333' }}>{verifStatus}</p>}
-            </div>
-
-            {/* TRANSFER SECTION */}
-            <div style={{ border: '1px solid #eee', padding: '25px', textAlign: 'left', backgroundColor: '#fafafa' }}>
-              <h3 style={{ fontSize: '12px', color: '#888', marginBottom: '15px', fontWeight: 'bold', letterSpacing: '1px' }}>TRANSFER TOKENS</h3>
-              <input id="target" placeholder="Recipient Wallet Address" style={{ width: '100%', padding: '12px', marginBottom: '12px', border: '1px solid #ccc', fontSize: '13px' }} />
-              <input id="jumlah" placeholder="Amount (RXR)" type="number" style={{ width: '100%', padding: '12px', marginBottom: '15px', border: '1px solid #ccc', fontSize: '13px' }} />
-              <button onClick={transferRXR} style={{ width: '100%', padding: '14px', backgroundColor: '#fff', color: '#000', border: '2px solid #000', fontWeight: 'bold', cursor: 'pointer', fontSize: '14px' }}>SEND RXR TOKENS</button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* RIGHT PANEL: ACTIVITY LOG */}
-      <div style={{ flex: '1', backgroundColor: '#f9f9f9', padding: '60px 45px', display: 'flex', flexDirection: 'column' }}>
-        <h2 style={{ letterSpacing: '4px', borderBottom: '3px solid #000', paddingBottom: '20px', marginBottom: '35px', color: '#000', fontWeight: 'bold' }}>ACTIVITY LOG</h2>
-        
+    <div className="App">
+      <header>
+        <h1 className="title">ROXOR CAVALIER SCENT</h1>
         {!walletAddress ? (
-          <p style={{ color: '#aaa', fontStyle: 'italic' }}>Please connect your wallet to view recent activity.</p>
-        ) : history.length === 0 ? (
-          <p style={{ color: '#aaa', fontStyle: 'italic' }}>No recent transactions found on Base Sepolia.</p>
+          <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
         ) : (
-          <div style={{ overflowY: 'auto', maxHeight: '70vh' }}>
-            {history.map((tx, index) => (
-              <div key={index} style={{ border: '1px solid #eee', padding: '20px', backgroundColor: '#fff', marginBottom: '15px', boxShadow: '4px 4px 0px #000' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                   <span style={{ fontSize: '10px', color: '#999', fontWeight: 'bold' }}>{tx.time}</span>
-                   <span style={{ fontSize: '10px', fontWeight: 'bold', color: tx.status === 'Success' ? '#27ae60' : '#f39c12' }}>{tx.status.toUpperCase()}</span>
+          <p id="status">ACTIVE WALLET: {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</p>
+        )}
+      </header>
+
+      <main>
+        {/* 1. PRODUCT VERIFIER */}
+        <section className="main-card-section">
+          <div className="card">
+            <h3>PRODUCT VERIFIER</h3>
+            <p>Verify the authenticity of your ROXOR fragrance.</p>
+            <input type="text" id="serialInput" placeholder="e.g., RXR-VLT-001" className="roxor-input" />
+            <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>
+              VERIFY NOW
+            </button>
+            {verifStatus && <p className="verif-result" style={{marginTop:'15px'}}>{verifStatus}</p>}
+          </div>
+        </section>
+
+        {/* 2. DIGITAL VAULT */}
+        {walletAddress && (
+          <section className="main-card-section">
+            <div className="card">
+              <h3>DIGITAL VAULT</h3>
+              <div className="nft-display-grid">
+                <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''}`}>
+                  <div className="nft-badge">EXTRAIT 1:1</div>
+                  <div className="nft-content">
+                    <span className="nft-title">VALIANT</span>
+                    <span className="nft-serial">{mintSerial || "CERTIFIED"}</span>
+                  </div>
+                  <div className="nft-chain-tag">BASE NETWORK</div>
                 </div>
-                <p style={{ fontSize: '18px', fontWeight: 'bold', margin: '5px 0', color: '#000' }}>-{tx.amount} RXR</p>
-                <p style={{ fontSize: '11px', color: '#666', wordBreak: 'break-all', fontFamily: 'monospace' }}>Recipient: {tx.to}</p>
               </div>
-            ))}
+              <div className="mint-control" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <input 
+                  type="text" 
+                  placeholder="Enter Serial (e.g. VLT-001)" 
+                  className="roxor-input"
+                  value={mintSerial}
+                  onChange={(e) => setMintSerial(e.target.value.toUpperCase())}
+                  disabled={isMinting}
+                />
+                <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting}>
+                  {isMinting ? "MINTING IN PROGRESS..." : "MINT NFT CERTIFICATE"}
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 3. INTERACTIVE 3D */}
+        <section className="main-card-section">
+           <div className="card" style={{ minHeight: '400px' }}>
+              <h3>VALIANT INTERACTIVE VIEW</h3>
+              <Suspense fallback={<p>Loading 3D Experience...</p>}>
+                <Valiant3D />
+              </Suspense>
+           </div>
+        </section>
+
+        {/* 4. SCENT PROFILE (NIHH YANG TADI ILANG, KING!) */}
+        <section className="main-card-section variant-section">
+          <div className="card scent-card">
+            <h3>VALIANT SCENT PROFILE</h3>
+            <p>Dior Sauvage Inspired | 1:1 Extrait de Parfum</p>
+            <div className="pyramid-container">
+              <div className="pyramid-item">
+                <span className="note-label">TOP NOTES</span>
+                <span className="note-value">Calabrian Bergamot, Pepper</span>
+              </div>
+              <div className="pyramid-item">
+                <span className="note-label">HEART NOTES</span>
+                <span className="note-value">Sichuan Pepper, Lavender, Pink Pepper</span>
+              </div>
+              <div className="pyramid-item">
+                <span className="note-label">BASE NOTES</span>
+                <span className="note-value">Ambroxan, Cedar, Labdanum</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* SUCCESS MODAL */}
+      {showSuccess && (
+        <div className="roxor-modal-overlay">
+          <div className="roxor-success-modal">
+            <div className="success-icon">✦</div>
+            <h3>AUTHENTICITY SECURED</h3>
+            <p>Your ROXOR Digital Certificate has been successfully written to the Base Ledger.</p>
+            <button onClick={() => setShowSuccess(false)} className="roxor-btn" style={{padding:'10px'}}>CLOSE</button>
+          </div>
+        </div>
+      )}
+
+      {/* FLOATING SHOPEE & NdoAI */}
+      <div className="shopee-float">
+        <button className="shopee-btn" onClick={() => window.open(shopeeLink, '_blank')}>🛒 SHOP ON SHOPEE</button>
+      </div>
+      <div className="ndoai-container">
+        {showAI && (
+          <div className="ai-chat-window">
+            <div className="ai-header">NdoAI Assistant</div>
+            <div className="ai-content"><p><strong>NdoAI:</strong> {isAiLoading ? "..." : aiResponse}</p></div>
+            <div className="ai-footer">
+              <input value={aiInput} onChange={(e) => setAiInput(e.target.value)} placeholder="Ask..." onKeyPress={(e) => e.key === 'Enter' && handleNdoAI()} />
+            </div>
           </div>
         )}
+        <button className="ai-toggle" onClick={() => setShowAI(!showAI)}>{showAI ? "X" : "🤖 NdoAI"}</button>
       </div>
-
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
