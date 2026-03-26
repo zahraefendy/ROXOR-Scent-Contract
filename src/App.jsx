@@ -18,7 +18,6 @@ function App() {
   const [isAiLoading, setIsAiLoading] = useState(false);
 
   const nftAddress = "0x36e606395eAf55cECf98200613CA90Ce3919711c"      
-  const shopeeLink = "https://shopee.co.id/roxor.official" 
 
   async function connectWallet() {
     if (window.ethereum) {
@@ -142,14 +141,14 @@ function App() {
         {/* 3. INTERACTIVE 3D */}
         <section className="main-card-section">
            <div className="card" style={{ minHeight: '400px' }}>
-              <h3>VALIANT INTERACTIVE VIEW</h3>
-              <Suspense fallback={<p>Loading 3D Experience...</p>}>
-                <Valiant3D />
-              </Suspense>
+             <h3>VALIANT INTERACTIVE VIEW</h3>
+             <Suspense fallback={<p>Loading 3D Experience...</p>}>
+               <Valiant3D />
+             </Suspense>
            </div>
         </section>
 
-        {/* 4. SCENT PROFILE (NIHH YANG TADI ILANG, KING!) */}
+        {/* 4. SCENT PROFILE */}
         <section className="main-card-section variant-section">
           <div className="card scent-card">
             <h3>VALIANT SCENT PROFILE</h3>
@@ -184,10 +183,7 @@ function App() {
         </div>
       )}
 
-      {/* FLOATING SHOPEE & NdoAI */}
-      <div className="shopee-float">
-        <button className="shopee-btn" onClick={() => window.open(shopeeLink, '_blank')}>🛒 SHOP ON SHOPEE</button>
-      </div>
+      {/* NdoAI - Button Shopee Sudah Dihapus Dari Sini */}
       <div className="ndoai-container">
         {showAI && (
           <div className="ai-chat-window">
