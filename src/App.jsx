@@ -120,78 +120,67 @@ function App() {
             
             {scentDetail && (
               <div className="scent-verif-detail" style={{
-                marginTop: '15px', 
-                padding: '20px', 
-                border: '2px solid #000', 
-                textAlign: 'left', 
-                background: '#fff', 
-                borderRadius: '12px',
-                color: '#000'
+                marginTop: '15px', padding: '20px', border: '2px solid #000', textAlign: 'left', background: '#fff', borderRadius: '12px', color: '#000'
               }}>
                 <div style={{display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '10px'}}>
                   <h4 style={{margin: '0', color: '#000', letterSpacing: '1px'}}>{scentDetail.name}</h4>
                   <span style={{fontSize: '0.6rem', background: '#000', color: '#fff', padding: '2px 6px', borderRadius: '4px'}}>{scentDetail.batch}</span>
                 </div>
-                
                 <p style={{fontSize: '0.8rem', fontStyle: 'italic', color: '#333', margin: '10px 0'}}>{scentDetail.type} - {scentDetail.vibes}</p>
-                
-                <p style={{fontSize: '0.9rem', color: '#000', lineHeight: '1.5', margin: '0 0 20px 0'}}>
-                  {scentDetail.description}
-                </p>
+                <p style={{fontSize: '0.9rem', color: '#000', lineHeight: '1.5', margin: '0 0 20px 0'}}>{scentDetail.description}</p>
 
-                {/* GLOBAL RWA MAP SECTION */}
                 <div style={{borderTop: '1px solid #eee', paddingTop: '15px'}}>
                   <p style={{fontSize: '0.7rem', fontWeight: 'bold', color: '#666', marginBottom: '8px'}}>RIALO GLOBAL ASSET MAP:</p>
                   <div style={{
-                    width: '100%', 
-                    height: '120px', 
-                    background: '#f0f0f0', 
-                    borderRadius: '8px', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center',
-                    border: '1px solid #ddd',
-                    position: 'relative',
-                    overflow: 'hidden'
+                    width: '100%', height: '120px', background: '#f0f0f0', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #ddd', position: 'relative', overflow: 'hidden'
                   }}>
                     <span style={{fontSize: '0.75rem', fontWeight: 'bold', zIndex: 2}}>JKT 📍 ——— LDN 📍 ——— DXB 📍</span>
-                    {/* Efek Garis Koneksi */}
                     <div style={{position: 'absolute', width: '100%', height: '2px', background: 'rgba(0,0,0,0.05)'}}></div>
                   </div>
-                  <p style={{fontSize: '0.65rem', marginTop: '8px', textAlign: 'center', color: '#888'}}>
-                    PROVENANCE VERIFIED ON RIALO LEDGER
-                  </p>
                 </div>
               </div>
             )}
           </div>
         </section>
 
-        {/* 2. DIGITAL VAULT */}
+        {/* 2. DIGITAL VAULT DENGAN NFT-VALIANT.PNG */}
         {walletAddress && (
           <section className="main-card-section">
             <div className="card">
               <h3>DIGITAL VAULT</h3>
               <div className="nft-display-grid">
-                <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''}`}>
-                  <div className="nft-badge">EXTRAIT 1:1</div>
-                  <div className="nft-content">
-                    <span className="nft-title">VALIANT</span>
-                    <span className="nft-serial">{mintSerial || "CERTIFIED"}</span>
+                <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''}`} style={{ 
+                  background: '#000', 
+                  border: '2px solid #000',
+                  padding: '0',
+                  overflow: 'hidden',
+                  borderRadius: '12px',
+                  display: 'flex',
+                  flexDirection: 'column'
+                }}>
+                  <img 
+                    src="/nft-valiant.png" 
+                    alt="Roxor NFT" 
+                    style={{ width: '100%', height: 'auto', display: 'block' }} 
+                  />
+                  <div style={{ padding: '12px', background: '#000', color: '#fff', textAlign: 'center' }}>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 'bold', letterSpacing: '2px' }}>
+                      {mintSerial || "VALIANT CERTIFIED"}
+                    </span>
                   </div>
-                  <div className="nft-chain-tag">RIALO NETWORK</div>
                 </div>
               </div>
-              <div className="mint-control" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div className="mint-control" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
                 <input 
                   type="text" 
-                  placeholder="Enter Serial" 
+                  placeholder="Enter Serial (e.g. VLT-001)" 
                   className="roxor-input"
                   value={mintSerial}
                   onChange={(e) => setMintSerial(e.target.value.toUpperCase())}
                   disabled={isMinting}
+                  style={{ color: '#000', borderColor: '#000' }}
                 />
-                <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting}>
+                <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting} style={{ background: '#000', color: '#fff' }}>
                   {isMinting ? "MINTING IN PROGRESS..." : "MINT NFT CERTIFICATE"}
                 </button>
               </div>
@@ -236,9 +225,9 @@ function App() {
         <div className="roxor-modal-overlay">
           <div className="roxor-success-modal">
             <div className="success-icon">✦</div>
-            <h3>AUTHENTICITY SECURED</h3>
-            <p>Your ROXOR Digital Certificate has been successfully written to the Rialo Ledger.</p>
-            <button onClick={() => setShowSuccess(false)} className="roxor-btn" style={{padding:'10px'}}>CLOSE</button>
+            <h3 style={{color:'#000'}}>AUTHENTICITY SECURED</h3>
+            <p style={{color:'#333'}}>Your ROXOR Digital Certificate has been successfully written to the Rialo Ledger.</p>
+            <button onClick={() => setShowSuccess(false)} className="roxor-btn" style={{padding:'10px', background:'#000', color:'#fff'}}>CLOSE</button>
           </div>
         </div>
       )}
