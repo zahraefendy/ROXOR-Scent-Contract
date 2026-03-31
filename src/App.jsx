@@ -1,4 +1,4 @@
-import { useState, Suspense, useEffect } from 'react'
+import { useState, Suspense } from 'react'
 import { ethers } from 'ethers'
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import './App.css'
@@ -14,27 +14,12 @@ function App() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [activeNote, setActiveNote] = useState(""); 
 
-  // DEFI & YIELD STATES
-  const [isStaked, setIsStaked] = useState(false);
-  const [yieldAmount, setYieldAmount] = useState(0);
-
   const [showAI, setShowAI] = useState(false);
   const [aiInput, setAiInput] = useState("");
   const [aiResponse, setAiResponse] = useState("Welcome to ROXOR, Sir. How can I assist you regarding our Valiant collection today?");
   const [isAiLoading, setIsAiLoading] = useState(false);
 
   const nftAddress = "0x36e606395eAf55cECf98200613CA90Ce3919711c"      
-
-  // Logic DeFi: Simulasi Yield Real-time
-  useEffect(() => {
-    let interval;
-    if (isStaked) {
-      interval = setInterval(() => {
-        setYieldAmount(prev => prev + 0.00005);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isStaked]);
 
   async function connectWallet() {
     if (window.ethereum) {
@@ -47,22 +32,19 @@ function App() {
 
   function checkProduct(serial) {
     if (!serial) return;
-    setVerifStatus("🔍 Syncing with Rialo Ledger..."); 
+    setVerifStatus("🔍 Syncing with Rialo..."); 
     setScentDetail(null);
     
     const code = serial.toUpperCase();
     
     setTimeout(() => {
         if (code.includes("VLT") || code === "RXR-VLT-001") {
-            setVerifStatus("✅ AUTHENTIC VALIANT! (Verified on Rialo)"); 
+            setVerifStatus("✅ AUTHENTIC PRODUCT VERIFIED"); 
             setScentDetail({
               name: "VALIANT",
               type: "Extrait de Parfum",
               vibes: "Fresh, Spicy, & Woody",
-              // RWA DATA
-              batch: "BATCH-VLT-001-2026",
-              vault: "Secure Vault - Jakarta",
-              status: "PHYSICAL ASSET SECURED"
+              description: "A powerful and noble composition. Valiant opens with the radiant freshness of Calabrian Bergamot and Pepper. Its heart reveals a sophisticated blend of Sichuan Pepper and Lavender, settling into a long-lasting, masculine trail of precious Ambroxan and Cedarwood."
             });
         } else {
             setVerifStatus("❌ INVALID CODE! Product not recognized.");
@@ -80,7 +62,7 @@ function App() {
       const signer = await provider.getSigner();
       const nftContract = new ethers.Contract(nftAddress, abiNFT, signer);
       const tx = await nftContract.mintCertificate(walletAddress, `https://roxor.id/cert/${mintSerial}`);
-      setVerifStatus("⏳ Minting on Rialo..."); 
+      setVerifStatus("⏳ Minting on Rialo Network..."); 
       await tx.wait();
       setVerifStatus("");
       setShowSuccess(true);
@@ -123,70 +105,45 @@ function App() {
       </header>
 
       <main>
-        {/* 1. PRODUCT VERIFIER (RWA) */}
+        {/* 1. PRODUCT VERIFIER */}
         <section className="main-card-section">
           <div className="card">
-            <h3>RWA PRODUCT VERIFIER</h3>
-            <p>Verify the physical asset link on Rialo Network.</p>
+            <h3>PRODUCT VERIFIER</h3>
+            <p>Check the authenticity of your ROXOR fragrance.</p>
             <input type="text" id="serialInput" placeholder="e.g., RXR-VLT-001" className="roxor-input" />
             <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>
-              VERIFY ASSET
+              VERIFY NOW
             </button>
             
             {verifStatus && <p className="verif-result" style={{marginTop:'15px', fontWeight: 'bold'}}>{verifStatus}</p>}
             
             {scentDetail && (
-              <div className="scent-verif-detail" style={{marginTop: '10px', padding: '15px', borderTop: '1px solid #444', background: 'rgba(0, 255, 204, 0.05)', borderRadius: '8px'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <h4 style={{margin: '0', color: '#fff'}}>{scentDetail.name}</h4>
-                    <span style={{fontSize: '0.7rem', color: '#00ffcc', border: '1px solid #00ffcc', padding: '2px 6px', borderRadius: '4px'}}>{scentDetail.status}</span>
-                </div>
-                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '12px', textAlign: 'left'}}>
-                    <div>
-                        <p style={{fontSize: '0.65rem', color: '#888', margin: '0'}}>BATCH ID</p>
-                        <p style={{fontSize: '0.8rem', color: '#eee', margin: '2px 0'}}>{scentDetail.batch}</p>
-                    </div>
-                    <div>
-                        <p style={{fontSize: '0.65rem', color: '#888', margin: '0'}}>VAULT LOCATION</p>
-                        <p style={{fontSize: '0.8rem', color: '#eee', margin: '2px 0'}}>{scentDetail.vault}</p>
-                    </div>
-                </div>
+              <div className="scent-verif-detail" style={{marginTop: '15px', padding: '15px', borderTop: '1px solid #444', textAlign: 'left', background: 'rgba(255,255,255,0.02)', borderRadius: '8px'}}>
+                <h4 style={{margin: '0', color: '#00ffcc', letterSpacing: '1px'}}>{scentDetail.name}</h4>
+                <p style={{fontSize: '0.75rem', fontStyle: 'italic', color: '#aaa', marginBottom: '10px'}}>{scentDetail.type} - {scentDetail.vibes}</p>
+                <p style={{fontSize: '0.85rem', color: '#eee', lineHeight: '1.5', margin: '0'}}>
+                  {scentDetail.description}
+                </p>
               </div>
             )}
           </div>
         </section>
 
-        {/* 2. DIGITAL VAULT & DEFI DASHBOARD */}
+        {/* 2. DIGITAL VAULT */}
         {walletAddress && (
           <section className="main-card-section">
             <div className="card">
-              <h3>DIGITAL VAULT & DEFI</h3>
+              <h3>DIGITAL VAULT</h3>
               <div className="nft-display-grid">
-                <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''} ${isStaked ? 'staked-glow' : ''}`}>
+                <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''}`}>
                   <div className="nft-badge">EXTRAIT 1:1</div>
                   <div className="nft-content">
                     <span className="nft-title">VALIANT</span>
-                    <span className="nft-serial">{isStaked ? "🔒 ASSET STAKED" : (mintSerial || "CERTIFIED")}</span>
+                    <span className="nft-serial">{mintSerial || "CERTIFIED"}</span>
                   </div>
                   <div className="nft-chain-tag">RIALO NETWORK</div>
                 </div>
               </div>
-
-              {/* NEW: DEFI YIELD PANEL */}
-              <div style={{margin: '20px 0', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: '1px solid #333'}}>
-                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem'}}>
-                    <span style={{color: '#888'}}>Accrued Yield:</span>
-                    <span style={{color: '#00ffcc', fontWeight: 'bold'}}>{yieldAmount.toFixed(5)} RXR</span>
-                </div>
-                <button 
-                  className="roxor-btn" 
-                  onClick={() => setIsStaked(!isStaked)}
-                  style={{marginTop: '10px', width: '100%', background: isStaked ? '#ff4444' : '#00ffcc', color: '#000'}}
-                >
-                  {isStaked ? "STOP STAKING" : "STAKE FOR RXR REWARDS"}
-                </button>
-              </div>
-
               <div className="mint-control" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <input 
                   type="text" 
@@ -194,9 +151,9 @@ function App() {
                   className="roxor-input"
                   value={mintSerial}
                   onChange={(e) => setMintSerial(e.target.value.toUpperCase())}
-                  disabled={isMinting || isStaked}
+                  disabled={isMinting}
                 />
-                <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting || isStaked}>
+                <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting}>
                   {isMinting ? "MINTING IN PROGRESS..." : "MINT NFT CERTIFICATE"}
                 </button>
               </div>
@@ -219,15 +176,15 @@ function App() {
           <div className="card scent-card">
             <h3>VALIANT SCENT PROFILE</h3>
             <div className="pyramid-container">
-              <div className={`pyramid-item ${activeNote === 'top' ? 'active-note' : ''}`} onMouseEnter={() => setActiveNote('top')} onMouseLeave={() => setActiveNote('')} style={{cursor: 'pointer'}}>
+              <div className={`pyramid-item ${activeNote === 'top' ? 'active-note' : ''}`} onMouseEnter={() => setActiveNote('top')} onMouseLeave={() => setActiveNote('')}>
                 <span className="note-label">TOP NOTES {activeNote === 'top' && '✨'}</span>
                 <span className="note-value">Calabrian Bergamot, Pepper</span>
               </div>
-              <div className={`pyramid-item ${activeNote === 'heart' ? 'active-note' : ''}`} onMouseEnter={() => setActiveNote('heart')} onMouseLeave={() => setActiveNote('')} style={{cursor: 'pointer'}}>
+              <div className={`pyramid-item ${activeNote === 'heart' ? 'active-note' : ''}`} onMouseEnter={() => setActiveNote('heart')} onMouseLeave={() => setActiveNote('')}>
                 <span className="note-label">HEART NOTES {activeNote === 'heart' && '🌿'}</span>
-                <span className="note-value">Sichuan Pepper, Lavender, Pink Pepper</span>
+                <span className="note-value">Lavender, Pink Pepper</span>
               </div>
-              <div className={`pyramid-item ${activeNote === 'base' ? 'active-note' : ''}`} onMouseEnter={() => setActiveNote('base')} onMouseLeave={() => setActiveNote('')} style={{cursor: 'pointer'}}>
+              <div className={`pyramid-item ${activeNote === 'base' ? 'active-note' : ''}`} onMouseEnter={() => setActiveNote('base')} onMouseLeave={() => setActiveNote('')}>
                 <span className="note-label">BASE NOTES {activeNote === 'base' && '🪵'}</span>
                 <span className="note-value">Ambroxan, Cedar, Labdanum</span>
               </div>
