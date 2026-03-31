@@ -1,4 +1,4 @@
-import { useState, Suspense } from 'react'
+import { useState, Suspense, useEffect } from 'react'
 import { ethers } from 'ethers'
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import './App.css'
@@ -8,10 +8,15 @@ import Valiant3D from './Valiant3D'
 function App() {
   const [walletAddress, setWalletAddress] = useState("")
   const [verifStatus, setVerifStatus] = useState("")
-  const [scentDetail, setScentDetail] = useState(null) // State baru buat detail aroma
+  const [scentDetail, setScentDetail] = useState(null)
   const [mintSerial, setMintSerial] = useState("");
   const [isMinting, setIsMinting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [activeNote, setActiveNote] = useState(""); 
+
+  // DEFI & YIELD STATES
+  const [isStaked, setIsStaked] = useState(false);
+  const [yieldAmount, setYieldAmount] = useState(0);
 
   const [showAI, setShowAI] = useState(false);
   const [aiInput, setAiInput] = useState("");
@@ -19,6 +24,17 @@ function App() {
   const [isAiLoading, setIsAiLoading] = useState(false);
 
   const nftAddress = "0x36e606395eAf55cECf98200613CA90Ce3919711c"      
+
+  // Logic DeFi: Simulasi Yield Real-time
+  useEffect(() => {
+    let interval;
+    if (isStaked) {
+      interval = setInterval(() => {
+        setYieldAmount(prev => prev + 0.00005);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isStaked]);
 
   async function connectWallet() {
     if (window.ethereum) {
@@ -31,19 +47,22 @@ function App() {
 
   function checkProduct(serial) {
     if (!serial) return;
-    setVerifStatus("🔍 Syncing with Base...");
-    setScentDetail(null); // Reset detail pas ngecek ulang
+    setVerifStatus("🔍 Syncing with Rialo Ledger..."); 
+    setScentDetail(null);
     
     const code = serial.toUpperCase();
     
     setTimeout(() => {
         if (code.includes("VLT") || code === "RXR-VLT-001") {
-            setVerifStatus("✅ AUTHENTIC VALIANT! (Verified on Base)");
-            // Munculin detail aroma khusus Valiant
+            setVerifStatus("✅ AUTHENTIC VALIANT! (Verified on Rialo)"); 
             setScentDetail({
               name: "VALIANT",
               type: "Extrait de Parfum",
-              vibes: "Fresh, Spicy, & Woody"
+              vibes: "Fresh, Spicy, & Woody",
+              // RWA DATA
+              batch: "BATCH-VLT-001-2026",
+              vault: "Secure Vault - Jakarta",
+              status: "PHYSICAL ASSET SECURED"
             });
         } else {
             setVerifStatus("❌ INVALID CODE! Product not recognized.");
@@ -61,7 +80,7 @@ function App() {
       const signer = await provider.getSigner();
       const nftContract = new ethers.Contract(nftAddress, abiNFT, signer);
       const tx = await nftContract.mintCertificate(walletAddress, `https://roxor.id/cert/${mintSerial}`);
-      setVerifStatus("⏳ Minting on Base...");
+      setVerifStatus("⏳ Minting on Rialo..."); 
       await tx.wait();
       setVerifStatus("");
       setShowSuccess(true);
@@ -104,44 +123,70 @@ function App() {
       </header>
 
       <main>
-        {/* 1. PRODUCT VERIFIER */}
+        {/* 1. PRODUCT VERIFIER (RWA) */}
         <section className="main-card-section">
           <div className="card">
-            <h3>PRODUCT VERIFIER</h3>
-            <p>Verify the authenticity of your ROXOR fragrance.</p>
+            <h3>RWA PRODUCT VERIFIER</h3>
+            <p>Verify the physical asset link on Rialo Network.</p>
             <input type="text" id="serialInput" placeholder="e.g., RXR-VLT-001" className="roxor-input" />
             <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>
-              VERIFY NOW
+              VERIFY ASSET
             </button>
             
             {verifStatus && <p className="verif-result" style={{marginTop:'15px', fontWeight: 'bold'}}>{verifStatus}</p>}
             
-            {/* DETAIL AROMA TAMBAHAN */}
             {scentDetail && (
-              <div className="scent-verif-detail" style={{marginTop: '10px', padding: '10px', borderTop: '1px solid #444'}}>
-                <p style={{fontSize: '0.9rem', color: '#aaa', margin: '5px 0'}}>Detected Scent:</p>
-                <h4 style={{margin: '0', color: '#fff'}}>{scentDetail.name}</h4>
-                <p style={{fontSize: '0.8rem', fontStyle: 'italic', color: '#00ffcc'}}>{scentDetail.type} - {scentDetail.vibes}</p>
+              <div className="scent-verif-detail" style={{marginTop: '10px', padding: '15px', borderTop: '1px solid #444', background: 'rgba(0, 255, 204, 0.05)', borderRadius: '8px'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <h4 style={{margin: '0', color: '#fff'}}>{scentDetail.name}</h4>
+                    <span style={{fontSize: '0.7rem', color: '#00ffcc', border: '1px solid #00ffcc', padding: '2px 6px', borderRadius: '4px'}}>{scentDetail.status}</span>
+                </div>
+                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '12px', textAlign: 'left'}}>
+                    <div>
+                        <p style={{fontSize: '0.65rem', color: '#888', margin: '0'}}>BATCH ID</p>
+                        <p style={{fontSize: '0.8rem', color: '#eee', margin: '2px 0'}}>{scentDetail.batch}</p>
+                    </div>
+                    <div>
+                        <p style={{fontSize: '0.65rem', color: '#888', margin: '0'}}>VAULT LOCATION</p>
+                        <p style={{fontSize: '0.8rem', color: '#eee', margin: '2px 0'}}>{scentDetail.vault}</p>
+                    </div>
+                </div>
               </div>
             )}
           </div>
         </section>
 
-        {/* 2. DIGITAL VAULT */}
+        {/* 2. DIGITAL VAULT & DEFI DASHBOARD */}
         {walletAddress && (
           <section className="main-card-section">
             <div className="card">
-              <h3>DIGITAL VAULT</h3>
+              <h3>DIGITAL VAULT & DEFI</h3>
               <div className="nft-display-grid">
-                <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''}`}>
+                <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''} ${isStaked ? 'staked-glow' : ''}`}>
                   <div className="nft-badge">EXTRAIT 1:1</div>
                   <div className="nft-content">
                     <span className="nft-title">VALIANT</span>
-                    <span className="nft-serial">{mintSerial || "CERTIFIED"}</span>
+                    <span className="nft-serial">{isStaked ? "🔒 ASSET STAKED" : (mintSerial || "CERTIFIED")}</span>
                   </div>
-                  <div className="nft-chain-tag">BASE NETWORK</div>
+                  <div className="nft-chain-tag">RIALO NETWORK</div>
                 </div>
               </div>
+
+              {/* NEW: DEFI YIELD PANEL */}
+              <div style={{margin: '20px 0', padding: '15px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: '1px solid #333'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem'}}>
+                    <span style={{color: '#888'}}>Accrued Yield:</span>
+                    <span style={{color: '#00ffcc', fontWeight: 'bold'}}>{yieldAmount.toFixed(5)} RXR</span>
+                </div>
+                <button 
+                  className="roxor-btn" 
+                  onClick={() => setIsStaked(!isStaked)}
+                  style={{marginTop: '10px', width: '100%', background: isStaked ? '#ff4444' : '#00ffcc', color: '#000'}}
+                >
+                  {isStaked ? "STOP STAKING" : "STAKE FOR RXR REWARDS"}
+                </button>
+              </div>
+
               <div className="mint-control" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <input 
                   type="text" 
@@ -149,9 +194,9 @@ function App() {
                   className="roxor-input"
                   value={mintSerial}
                   onChange={(e) => setMintSerial(e.target.value.toUpperCase())}
-                  disabled={isMinting}
+                  disabled={isMinting || isStaked}
                 />
-                <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting}>
+                <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting || isStaked}>
                   {isMinting ? "MINTING IN PROGRESS..." : "MINT NFT CERTIFICATE"}
                 </button>
               </div>
@@ -169,22 +214,21 @@ function App() {
            </div>
         </section>
 
-        {/* 4. SCENT PROFILE */}
+        {/* 4. SCENT PROFILE INTERAKTIF */}
         <section className="main-card-section variant-section">
           <div className="card scent-card">
             <h3>VALIANT SCENT PROFILE</h3>
-            <p>Dior Sauvage Inspired | 1:1 Extrait de Parfum</p>
             <div className="pyramid-container">
-              <div className="pyramid-item">
-                <span className="note-label">TOP NOTES</span>
+              <div className={`pyramid-item ${activeNote === 'top' ? 'active-note' : ''}`} onMouseEnter={() => setActiveNote('top')} onMouseLeave={() => setActiveNote('')} style={{cursor: 'pointer'}}>
+                <span className="note-label">TOP NOTES {activeNote === 'top' && '✨'}</span>
                 <span className="note-value">Calabrian Bergamot, Pepper</span>
               </div>
-              <div className="pyramid-item">
-                <span className="note-label">HEART NOTES</span>
+              <div className={`pyramid-item ${activeNote === 'heart' ? 'active-note' : ''}`} onMouseEnter={() => setActiveNote('heart')} onMouseLeave={() => setActiveNote('')} style={{cursor: 'pointer'}}>
+                <span className="note-label">HEART NOTES {activeNote === 'heart' && '🌿'}</span>
                 <span className="note-value">Sichuan Pepper, Lavender, Pink Pepper</span>
               </div>
-              <div className="pyramid-item">
-                <span className="note-label">BASE NOTES</span>
+              <div className={`pyramid-item ${activeNote === 'base' ? 'active-note' : ''}`} onMouseEnter={() => setActiveNote('base')} onMouseLeave={() => setActiveNote('')} style={{cursor: 'pointer'}}>
+                <span className="note-label">BASE NOTES {activeNote === 'base' && '🪵'}</span>
                 <span className="note-value">Ambroxan, Cedar, Labdanum</span>
               </div>
             </div>
@@ -198,7 +242,7 @@ function App() {
           <div className="roxor-success-modal">
             <div className="success-icon">✦</div>
             <h3>AUTHENTICITY SECURED</h3>
-            <p>Your ROXOR Digital Certificate has been successfully written to the Base Ledger.</p>
+            <p>Your ROXOR Digital Certificate has been successfully written to the Rialo Ledger.</p>
             <button onClick={() => setShowSuccess(false)} className="roxor-btn" style={{padding:'10px'}}>CLOSE</button>
           </div>
         </div>
