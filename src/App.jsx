@@ -8,6 +8,7 @@ import Valiant3D from './Valiant3D'
 function App() {
   const [walletAddress, setWalletAddress] = useState("")
   const [verifStatus, setVerifStatus] = useState("")
+  const [scentDetail, setScentDetail] = useState(null) // State baru buat detail aroma
   const [mintSerial, setMintSerial] = useState("");
   const [isMinting, setIsMinting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -31,12 +32,22 @@ function App() {
   function checkProduct(serial) {
     if (!serial) return;
     setVerifStatus("🔍 Syncing with Base...");
+    setScentDetail(null); // Reset detail pas ngecek ulang
+    
     const code = serial.toUpperCase();
+    
     setTimeout(() => {
         if (code.includes("VLT") || code === "RXR-VLT-001") {
             setVerifStatus("✅ AUTHENTIC VALIANT! (Verified on Base)");
+            // Munculin detail aroma khusus Valiant
+            setScentDetail({
+              name: "VALIANT",
+              type: "Extrait de Parfum",
+              vibes: "Fresh, Spicy, & Woody"
+            });
         } else {
             setVerifStatus("❌ INVALID CODE! Product not recognized.");
+            setScentDetail(null);
         }
     }, 600);
   }
@@ -102,7 +113,17 @@ function App() {
             <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>
               VERIFY NOW
             </button>
-            {verifStatus && <p className="verif-result" style={{marginTop:'15px'}}>{verifStatus}</p>}
+            
+            {verifStatus && <p className="verif-result" style={{marginTop:'15px', fontWeight: 'bold'}}>{verifStatus}</p>}
+            
+            {/* DETAIL AROMA TAMBAHAN */}
+            {scentDetail && (
+              <div className="scent-verif-detail" style={{marginTop: '10px', padding: '10px', borderTop: '1px solid #444'}}>
+                <p style={{fontSize: '0.9rem', color: '#aaa', margin: '5px 0'}}>Detected Scent:</p>
+                <h4 style={{margin: '0', color: '#fff'}}>{scentDetail.name}</h4>
+                <p style={{fontSize: '0.8rem', fontStyle: 'italic', color: '#00ffcc'}}>{scentDetail.type} - {scentDetail.vibes}</p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -183,7 +204,7 @@ function App() {
         </div>
       )}
 
-      {/* NdoAI - Button Shopee Sudah Dihapus Dari Sini */}
+      {/* NdoAI */}
       <div className="ndoai-container">
         {showAI && (
           <div className="ai-chat-window">
