@@ -44,6 +44,7 @@ function App() {
               name: "VALIANT",
               type: "Extrait de Parfum",
               vibes: "Fresh, Spicy, & Woody",
+              batch: "BATCH: RXR-VLT-2026",
               description: "A powerful and noble composition. Valiant opens with the radiant freshness of Calabrian Bergamot and Pepper. Its heart reveals a sophisticated blend of Sichuan Pepper and Lavender, settling into a long-lasting, masculine trail of precious Ambroxan and Cedarwood."
             });
         } else {
@@ -105,7 +106,7 @@ function App() {
       </header>
 
       <main>
-        {/* 1. PRODUCT VERIFIER */}
+        {/* 1. PRODUCT VERIFIER & GLOBAL MAP */}
         <section className="main-card-section">
           <div className="card">
             <h3>PRODUCT VERIFIER</h3>
@@ -115,15 +116,52 @@ function App() {
               VERIFY NOW
             </button>
             
-            {verifStatus && <p className="verif-result" style={{marginTop:'15px', fontWeight: 'bold'}}>{verifStatus}</p>}
+            {verifStatus && <p className="verif-result" style={{marginTop:'15px', fontWeight: 'bold', color: '#000'}}>{verifStatus}</p>}
             
             {scentDetail && (
-              <div className="scent-verif-detail" style={{marginTop: '15px', padding: '15px', borderTop: '1px solid #444', textAlign: 'left', background: 'rgba(255,255,255,0.02)', borderRadius: '8px'}}>
-                <h4 style={{margin: '0', color: '#00ffcc', letterSpacing: '1px'}}>{scentDetail.name}</h4>
-                <p style={{fontSize: '0.75rem', fontStyle: 'italic', color: '#aaa', marginBottom: '10px'}}>{scentDetail.type} - {scentDetail.vibes}</p>
-                <p style={{fontSize: '0.85rem', color: '#eee', lineHeight: '1.5', margin: '0'}}>
+              <div className="scent-verif-detail" style={{
+                marginTop: '15px', 
+                padding: '20px', 
+                border: '2px solid #000', 
+                textAlign: 'left', 
+                background: '#fff', 
+                borderRadius: '12px',
+                color: '#000'
+              }}>
+                <div style={{display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #eee', paddingBottom: '10px'}}>
+                  <h4 style={{margin: '0', color: '#000', letterSpacing: '1px'}}>{scentDetail.name}</h4>
+                  <span style={{fontSize: '0.6rem', background: '#000', color: '#fff', padding: '2px 6px', borderRadius: '4px'}}>{scentDetail.batch}</span>
+                </div>
+                
+                <p style={{fontSize: '0.8rem', fontStyle: 'italic', color: '#333', margin: '10px 0'}}>{scentDetail.type} - {scentDetail.vibes}</p>
+                
+                <p style={{fontSize: '0.9rem', color: '#000', lineHeight: '1.5', margin: '0 0 20px 0'}}>
                   {scentDetail.description}
                 </p>
+
+                {/* GLOBAL RWA MAP SECTION */}
+                <div style={{borderTop: '1px solid #eee', paddingTop: '15px'}}>
+                  <p style={{fontSize: '0.7rem', fontWeight: 'bold', color: '#666', marginBottom: '8px'}}>RIALO GLOBAL ASSET MAP:</p>
+                  <div style={{
+                    width: '100%', 
+                    height: '120px', 
+                    background: '#f0f0f0', 
+                    borderRadius: '8px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    border: '1px solid #ddd',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}>
+                    <span style={{fontSize: '0.75rem', fontWeight: 'bold', zIndex: 2}}>JKT 📍 ——— LDN 📍 ——— DXB 📍</span>
+                    {/* Efek Garis Koneksi */}
+                    <div style={{position: 'absolute', width: '100%', height: '2px', background: 'rgba(0,0,0,0.05)'}}></div>
+                  </div>
+                  <p style={{fontSize: '0.65rem', marginTop: '8px', textAlign: 'center', color: '#888'}}>
+                    PROVENANCE VERIFIED ON RIALO LEDGER
+                  </p>
+                </div>
               </div>
             )}
           </div>
@@ -147,7 +185,7 @@ function App() {
               <div className="mint-control" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <input 
                   type="text" 
-                  placeholder="Enter Serial (e.g. VLT-001)" 
+                  placeholder="Enter Serial" 
                   className="roxor-input"
                   value={mintSerial}
                   onChange={(e) => setMintSerial(e.target.value.toUpperCase())}
