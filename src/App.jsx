@@ -148,29 +148,34 @@ function App() {
           <section className="main-card-section">
             <div className="card">
               <h3>DIGITAL VAULT</h3>
-              <div className="nft-display-grid">
+              <div className="nft-display-grid" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''}`} style={{ 
                   background: '#000', 
-                  border: '2px solid #000',
+                  border: '2px solid #333',
                   padding: '0',
                   overflow: 'hidden',
-                  borderRadius: '12px',
+                  borderRadius: '16px',
                   display: 'flex',
-                  flexDirection: 'column'
+                  flexDirection: 'column',
+                  width: '100%',
+                  maxWidth: '300px',
+                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
                 }}>
+                  {/* Gambar NFT yang ada di folder public */}
                   <img 
                     src="/nft-valiant.png" 
                     alt="Roxor NFT" 
                     style={{ width: '100%', height: 'auto', display: 'block' }} 
                   />
-                  <div style={{ padding: '12px', background: '#000', color: '#fff', textAlign: 'center' }}>
-                    <span style={{ fontSize: '0.85rem', fontWeight: 'bold', letterSpacing: '2px' }}>
-                      {mintSerial || "VALIANT CERTIFIED"}
+                  <div style={{ padding: '15px', background: '#000', color: '#fff', textAlign: 'center', borderTop: '1px solid #222' }}>
+                    <div style={{ fontSize: '0.6rem', color: '#888', marginBottom: '4px', letterSpacing: '1px' }}>RIALO NETWORK CERTIFIED</div>
+                    <span style={{ fontSize: '1rem', fontWeight: 'bold', letterSpacing: '3px', textTransform: 'uppercase' }}>
+                      {mintSerial || "VALIANT"}
                     </span>
                   </div>
                 </div>
               </div>
-              <div className="mint-control" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '20px' }}>
+              <div className="mint-control" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <input 
                   type="text" 
                   placeholder="Enter Serial (e.g. VLT-001)" 
@@ -178,7 +183,7 @@ function App() {
                   value={mintSerial}
                   onChange={(e) => setMintSerial(e.target.value.toUpperCase())}
                   disabled={isMinting}
-                  style={{ color: '#000', borderColor: '#000' }}
+                  style={{ color: '#000', borderColor: '#000', textAlign: 'center' }}
                 />
                 <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting} style={{ background: '#000', color: '#fff' }}>
                   {isMinting ? "MINTING IN PROGRESS..." : "MINT NFT CERTIFICATE"}
