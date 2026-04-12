@@ -96,13 +96,41 @@ function App() {
 
   return (
     <div className="App">
-      <header>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px' }}>
         <h1 className="title">ROXOR CAVALIER SCENT</h1>
-        {!walletAddress ? (
-          <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
-        ) : (
-          <p id="status">ACTIVE WALLET: {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</p>
-        )}
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          {/* TOMBOL X (TWITTER) OFFICIAL - LINK UPDATED */}
+          <a 
+            href="https://x.com/rajaCrypto21146" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="x-link"
+            style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              textDecoration: 'none', 
+              color: '#000', 
+              background: '#fff', 
+              padding: '8px 12px', 
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              fontSize: '0.8rem',
+              border: '1px solid #000'
+            }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '8px' }}>
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+            </svg>
+            X OFFICIAL
+          </a>
+
+          {!walletAddress ? (
+            <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
+          ) : (
+            <p id="status" style={{ margin: 0 }}>ACTIVE: {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</p>
+          )}
+        </div>
       </header>
 
       <main>
@@ -143,7 +171,7 @@ function App() {
           </div>
         </section>
 
-        {/* 2. DIGITAL VAULT DENGAN NFT-VALIANT.PNG */}
+        {/* 2. DIGITAL VAULT */}
         {walletAddress && (
           <section className="main-card-section">
             <div className="card">
@@ -161,7 +189,6 @@ function App() {
                   maxWidth: '300px',
                   boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
                 }}>
-                  {/* Gambar NFT yang ada di folder public */}
                   <img 
                     src="/nft-valiant.png" 
                     alt="Roxor NFT" 
@@ -195,15 +222,15 @@ function App() {
 
         {/* 3. INTERACTIVE 3D */}
         <section className="main-card-section">
-           <div className="card" style={{ minHeight: '400px' }}>
-             <h3>VALIANT INTERACTIVE VIEW</h3>
-             <Suspense fallback={<p>Loading 3D Experience...</p>}>
-               <Valiant3D />
-             </Suspense>
-           </div>
+            <div className="card" style={{ minHeight: '400px' }}>
+              <h3>VALIANT INTERACTIVE VIEW</h3>
+              <Suspense fallback={<p>Loading 3D Experience...</p>}>
+                <Valiant3D />
+              </Suspense>
+            </div>
         </section>
 
-        {/* 4. SCENT PROFILE INTERAKTIF */}
+        {/* 4. SCENT PROFILE */}
         <section className="main-card-section variant-section">
           <div className="card scent-card">
             <h3>VALIANT SCENT PROFILE</h3>
