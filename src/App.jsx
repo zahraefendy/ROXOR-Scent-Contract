@@ -7,6 +7,7 @@ import Valiant3D from './Valiant3D'
 
 function App() {
   const [walletAddress, setWalletAddress] = useState("")
+  const [avatar, setAvatar] = useState("") // State untuk Avatar
   const [verifStatus, setVerifStatus] = useState("")
   const [scentDetail, setScentDetail] = useState(null)
   const [mintSerial, setMintSerial] = useState("");
@@ -25,7 +26,10 @@ function App() {
     if (window.ethereum) {
       try {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-        setWalletAddress(accounts[0]);
+        const address = accounts[0];
+        setWalletAddress(address);
+        // Mengambil avatar otomatis berdasarkan address (pake Effigy biar stabil)
+        setAvatar(`https://effigy.im/a/${address}.svg`);
       } catch (err) { console.error("Cancelled"); }
     } else { alert("Please install MetaMask!"); }
   }
@@ -94,12 +98,23 @@ function App() {
 
   return (
     <div className="App">
-      <header>
-        <h1 className="title">ROXOR CAVALIER SCENT</h1>
+      {/* HEADER DENGAN FITUR PROFIL AVATAR */}
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 5%' }}>
+        <h1 className="title" style={{ margin: 0 }}>ROXOR CAVALIER SCENT</h1>
         {!walletAddress ? (
           <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
         ) : (
-          <p id="status">ACTIVE WALLET: {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</p>
+          <div className="user-profile-nav" style={{ 
+            display: 'flex', alignItems: 'center', gap: '12px', 
+            background: 'rgba(255,255,255,0.1)', padding: '6px 16px', 
+            borderRadius: '40px', border: '1px solid rgba(255,255,255,0.2)',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <img src={avatar} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid #fff' }} />
+            <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff' }}>
+              {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}
+            </span>
+          </div>
         )}
       </header>
 
@@ -123,15 +138,6 @@ function App() {
                 </div>
                 <p style={{fontSize: '0.8rem', fontStyle: 'italic', color: '#333', margin: '10px 0'}}>{scentDetail.type} - {scentDetail.vibes}</p>
                 <p style={{fontSize: '0.9rem', color: '#000', lineHeight: '1.5', margin: '0 0 20px 0'}}>{scentDetail.description}</p>
-                <div style={{borderTop: '1px solid #eee', paddingTop: '15px'}}>
-                  <p style={{fontSize: '0.7rem', fontWeight: 'bold', color: '#666', marginBottom: '8px'}}>RIALO GLOBAL ASSET MAP:</p>
-                  <div style={{
-                    width: '100%', height: '120px', background: '#f0f0f0', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #ddd', position: 'relative', overflow: 'hidden'
-                  }}>
-                    <span style={{fontSize: '0.75rem', fontWeight: 'bold', zIndex: 2}}>JKT 📍 ——— LDN 📍 ——— DXB 📍</span>
-                    <div style={{position: 'absolute', width: '100%', height: '2px', background: 'rgba(0,0,0,0.05)'}}></div>
-                  </div>
-                </div>
               </div>
             )}
           </div>
