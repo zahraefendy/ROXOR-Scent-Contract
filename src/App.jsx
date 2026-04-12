@@ -94,7 +94,6 @@ function App() {
 
   return (
     <div className="App">
-      {/* HEADER BALIK KE SETELAN AWAL BIAR RAPI */}
       <header>
         <h1 className="title">ROXOR CAVALIER SCENT</h1>
         {!walletAddress ? (
@@ -191,7 +190,6 @@ function App() {
         </section>
       </main>
 
-      {/* SUCCESS MODAL */}
       {showSuccess && (
         <div className="roxor-modal-overlay">
           <div className="roxor-success-modal">
@@ -202,13 +200,13 @@ function App() {
         </div>
       )}
 
-      {/* --- FITUR X MELAYANG POJOK KANAN BAWAH --- */}
+      {/* --- LINK X Twitter Roxor Cavalier --- */}
       <a 
-        href="https://x.com/rajaCrypto21146" 
+        href="https://x.com/roxorcavalier" 
         target="_blank" 
         rel="noopener noreferrer"
         style={{ 
-          position: 'fixed', bottom: '80px', right: '20px', z自index: '1000',
+          position: 'fixed', bottom: '80px', right: '20px', zIndex: '1000',
           background: '#000', color: '#fff', width: '50px', height: '50px',
           borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
           boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '2px solid #fff', textDecoration: 'none'
