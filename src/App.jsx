@@ -98,43 +98,42 @@ function App() {
   return (
     <div className="App">
       
-      {/* WRAPPER HEADER UNTUK NAVIGASI */}
-      <div style={{ 
-        position: 'relative', 
-        width: '100%', 
-        padding: '20px 0', 
+      {/* HEADER AREA - SEMUA RATA TENGAH */}
+      <header style={{ 
         display: 'flex', 
+        flexDirection: 'column', 
         alignItems: 'center', 
-        justifyContent: 'center' 
+        justifyContent: 'center', 
+        padding: '40px 20px 20px 20px' 
       }}>
         
-        {/* PROFIL DI POJOK KIRI (Hanya muncul setelah konek) */}
-        {walletAddress && (
+        {/* JUDUL TETEP DI TENGAH */}
+        <h1 className="title" style={{ margin: '0 0 20px 0', textAlign: 'center' }}>
+          ROXOR CAVALIER SCENT
+        </h1>
+
+        {/* AREA PROFIL / TOMBOL (Di bawah judul) */}
+        {walletAddress ? (
           <div style={{ 
-            position: 'absolute', 
-            left: '20px', 
             display: 'flex', 
             alignItems: 'center', 
             gap: '10px',
-            background: '#f5f5f5', 
-            padding: '8px 15px', 
-            borderRadius: '50px',
-            border: '1px solid #000',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+            background: '#fff', 
+            padding: '8px 16px', 
+            borderRadius: '30px',
+            border: '2px solid #000',
+            boxShadow: '4px 4px 0px #000' 
           }}>
-            <img src={avatar} alt="Avatar" style={{ width: '30px', height: '30px', borderRadius: '50%', border: '1px solid #000' }} />
-            <span style={{ fontSize: '0.85rem', fontWeight: '800', color: '#000', letterSpacing: '1px' }}>
+            <img 
+              src={avatar} 
+              alt="Avatar" 
+              style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1px solid #000' }} 
+            />
+            <span style={{ fontSize: '0.85rem', fontWeight: '900', color: '#000', letterSpacing: '1px' }}>
               {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}
             </span>
           </div>
-        )}
-
-        {/* JUDUL TETEP DI TENGAH */}
-        <h1 className="title" style={{ margin: 0, textAlign: 'center' }}>ROXOR CAVALIER SCENT</h1>
-      </div>
-
-      <header style={{ marginTop: '10px' }}>
-        {!walletAddress && (
+        ) : (
           <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
         )}
       </header>
@@ -216,6 +215,16 @@ function App() {
           </div>
         </section>
       </main>
+
+      {showSuccess && (
+        <div className="roxor-modal-overlay">
+          <div className="roxor-success-modal">
+            <div className="success-icon">✦</div>
+            <h3 style={{color:'#000'}}>AUTHENTICITY SECURED</h3>
+            <button onClick={() => setShowSuccess(false)} className="roxor-btn" style={{padding:'10px', background:'#000', color:'#fff'}}>CLOSE</button>
+          </div>
+        </div>
+      )}
 
       {/* LINK X Twitter */}
       <a 
