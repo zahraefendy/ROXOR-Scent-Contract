@@ -7,7 +7,7 @@ import Valiant3D from './Valiant3D'
 
 function App() {
   const [walletAddress, setWalletAddress] = useState("")
-  const [avatar, setAvatar] = useState("") // State untuk Avatar
+  const [avatar, setAvatar] = useState("") 
   const [verifStatus, setVerifStatus] = useState("")
   const [scentDetail, setScentDetail] = useState(null)
   const [mintSerial, setMintSerial] = useState("");
@@ -28,7 +28,6 @@ function App() {
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
         const address = accounts[0];
         setWalletAddress(address);
-        // Mengambil avatar otomatis berdasarkan address (pake Effigy biar stabil)
         setAvatar(`https://effigy.im/a/${address}.svg`);
       } catch (err) { console.error("Cancelled"); }
     } else { alert("Please install MetaMask!"); }
@@ -97,24 +96,28 @@ function App() {
   };
 
   return (
-    <div className="App">
-      {/* HEADER DENGAN FITUR PROFIL AVATAR */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px 5%' }}>
-        <h1 className="title" style={{ margin: 0 }}>ROXOR CAVALIER SCENT</h1>
-        {!walletAddress ? (
+    <div className="App" style={{ position: 'relative' }}>
+      
+      {/* PROFIL DI POJOK KIRI ATAS - HANYA MUNCUL SETELAH KONEK */}
+      {walletAddress && (
+        <div style={{ 
+          position: 'absolute', top: '20px', left: '20px', 
+          display: 'flex', alignItems: 'center', gap: '8px',
+          background: 'rgba(0,0,0,0.05)', padding: '5px 12px', borderRadius: '30px',
+          border: '1px solid #ddd', zIndex: 10
+        }}>
+          <img src={avatar} alt="Avatar" style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid #000' }} />
+          <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#000' }}>
+            {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}
+          </span>
+        </div>
+      )}
+
+      {/* HEADER KEMBALI NORMAL KE TENGAH */}
+      <header>
+        <h1 className="title">ROXOR CAVALIER SCENT</h1>
+        {!walletAddress && (
           <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
-        ) : (
-          <div className="user-profile-nav" style={{ 
-            display: 'flex', alignItems: 'center', gap: '12px', 
-            background: 'rgba(255,255,255,0.1)', padding: '6px 16px', 
-            borderRadius: '40px', border: '1px solid rgba(255,255,255,0.2)',
-            backdropFilter: 'blur(10px)'
-          }}>
-            <img src={avatar} alt="Avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid #fff' }} />
-            <span style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff' }}>
-              {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}
-            </span>
-          </div>
         )}
       </header>
 
@@ -196,17 +199,7 @@ function App() {
         </section>
       </main>
 
-      {showSuccess && (
-        <div className="roxor-modal-overlay">
-          <div className="roxor-success-modal">
-            <div className="success-icon">✦</div>
-            <h3 style={{color:'#000'}}>AUTHENTICITY SECURED</h3>
-            <button onClick={() => setShowSuccess(false)} className="roxor-btn" style={{padding:'10px', background:'#000', color:'#fff'}}>CLOSE</button>
-          </div>
-        </div>
-      )}
-
-      {/* --- LINK X Twitter Roxor Cavalier --- */}
+      {/* LINK X Twitter */}
       <a 
         href="https://x.com/roxorcavalier" 
         target="_blank" 
