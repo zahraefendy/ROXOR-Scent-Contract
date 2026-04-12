@@ -96,26 +96,44 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ position: 'relative' }}>
+    <div className="App">
       
-      {/* PROFIL DI POJOK KIRI ATAS - HANYA MUNCUL SETELAH KONEK */}
-      {walletAddress && (
-        <div style={{ 
-          position: 'absolute', top: '20px', left: '20px', 
-          display: 'flex', alignItems: 'center', gap: '8px',
-          background: 'rgba(0,0,0,0.05)', padding: '5px 12px', borderRadius: '30px',
-          border: '1px solid #ddd', zIndex: 10
-        }}>
-          <img src={avatar} alt="Avatar" style={{ width: '28px', height: '28px', borderRadius: '50%', border: '1px solid #000' }} />
-          <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#000' }}>
-            {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}
-          </span>
-        </div>
-      )}
+      {/* WRAPPER HEADER UNTUK NAVIGASI */}
+      <div style={{ 
+        position: 'relative', 
+        width: '100%', 
+        padding: '20px 0', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center' 
+      }}>
+        
+        {/* PROFIL DI POJOK KIRI (Hanya muncul setelah konek) */}
+        {walletAddress && (
+          <div style={{ 
+            position: 'absolute', 
+            left: '20px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '10px',
+            background: '#f5f5f5', 
+            padding: '8px 15px', 
+            borderRadius: '50px',
+            border: '1px solid #000',
+            boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+          }}>
+            <img src={avatar} alt="Avatar" style={{ width: '30px', height: '30px', borderRadius: '50%', border: '1px solid #000' }} />
+            <span style={{ fontSize: '0.85rem', fontWeight: '800', color: '#000', letterSpacing: '1px' }}>
+              {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}
+            </span>
+          </div>
+        )}
 
-      {/* HEADER KEMBALI NORMAL KE TENGAH */}
-      <header>
-        <h1 className="title">ROXOR CAVALIER SCENT</h1>
+        {/* JUDUL TETEP DI TENGAH */}
+        <h1 className="title" style={{ margin: 0, textAlign: 'center' }}>ROXOR CAVALIER SCENT</h1>
+      </div>
+
+      <header style={{ marginTop: '10px' }}>
         {!walletAddress && (
           <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
         )}
