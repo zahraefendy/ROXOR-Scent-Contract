@@ -16,7 +16,6 @@ function App() {
   const [showSuccess, setShowSuccess] = useState(false);
   const [activeNote, setActiveNote] = useState(""); 
   
-  // Fitur Baru: My Ledger State
   const [ledger, setLedger] = useState([]);
   const [viewLedger, setViewLedger] = useState(false);
 
@@ -27,7 +26,6 @@ function App() {
 
   const nftAddress = "0x36e606395eAf55cECf98200613CA90Ce3919711c"      
 
-  // Load Ledger dari LocalStorage pas awal buka
   useEffect(() => {
     const savedLedger = localStorage.getItem('roxor_ledger');
     if (savedLedger) setLedger(JSON.parse(savedLedger));
@@ -62,7 +60,6 @@ function App() {
             setVerifStatus("✅ AUTHENTIC PRODUCT VERIFIED"); 
             setScentDetail(detail);
 
-            // SIMPAN KE LEDGER
             const newEntry = {
               id: Date.now(),
               date: new Date().toLocaleString(),
@@ -81,7 +78,6 @@ function App() {
     }, 600);
   }
 
-  // ... (Fungsi Minting & AI tetep sama) ...
   async function mintSertifikat() {
     if (!walletAddress || !mintSerial) return;
     setIsMinting(true);
@@ -131,115 +127,113 @@ function App() {
 
   return (
     <div className="App">
-      
-      {/* --- DASHBOARD MENU OVERLAY --- */}
+      {/* MENU OVERLAY */}
       {isMenuOpen && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-          background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(12px)', zIndex: 10000
-        }} onClick={() => setIsMenuOpen(false)}>
-          
-          <div style={{
-            width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000',
-            padding: '40px 20px', display: 'flex', flexDirection: 'column',
-            boxShadow: '15px 0 30px rgba(0,0,0,0.1)'
-          }} onClick={(e) => e.stopPropagation()}>
-            
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(12px)', zIndex: 10000 }} onClick={() => setIsMenuOpen(false)}>
+          <div style={{ width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000', padding: '40px 20px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
               <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'bold' }}>R</div>
               <h2 style={{ color: '#000', margin: 0, fontSize: '1.5rem', letterSpacing: '2px' }}>ROXOR HUB</h2>
             </div>
-
             <nav style={{ display: 'flex', flexDirection: 'column' }}>
               <button style={menuItemStyle} onClick={() => {setIsMenuOpen(false); setViewLedger(false);}}>🏠 Sanctuary</button>
-              
-              {/* Trigger My Ledger */}
               <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>📊 My Ledger</button>
-              
-              <button style={menuItemStyle} onClick={() => alert("Digital Vault: Minted certificates view coming soon.")}>🖼️ Digital Vault</button>
-              <button style={menuItemStyle} onClick={() => alert("Scent Council: Governance voting soon.")}>⚖️ Scent Council</button>
+              <button style={menuItemStyle} onClick={() => alert("Digital Vault coming soon.")}>🖼️ Digital Vault</button>
+              <button style={menuItemStyle} onClick={() => alert("Scent Council coming soon.")}>⚖️ Scent Council</button>
               <button style={menuItemStyle} onClick={() => window.open('https://x.com/roxorcavalier', '_blank')}>📱 Community</button>
             </nav>
-
             <button onClick={() => setIsMenuOpen(false)} style={{ marginTop: 'auto', background: '#000', color: '#fff', border: 'none', padding: '15px', borderRadius: '10px', fontWeight: 'bold' }}>CLOSE</button>
           </div>
         </div>
       )}
 
-      {/* --- MODAL MY LEDGER --- */}
+      {/* LEDGER MODAL */}
       {viewLedger && (
         <div className="roxor-modal-overlay" style={{zIndex: 11000}}>
-          <div className="card" style={{ maxWidth: '500px', width: '90%', maxHeight: '80vh', overflowY: 'auto' }}>
-            <h3 style={{letterSpacing: '2px'}}>MY LEDGER</h3>
-            <p style={{fontSize: '0.8rem', color: '#666'}}>Record of your on-chain authentications</p>
-            <hr border="1px solid #000" />
-            
-            {ledger.length === 0 ? (
-              <p style={{padding: '20px', fontStyle: 'italic'}}>No records found. Verify a product to start your ledger.</p>
-            ) : (
-              ledger.map(log => (
-                <div key={log.id} style={{ 
-                  textAlign: 'left', padding: '15px 0', borderBottom: '1px solid #eee'
-                }}>
-                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <span style={{fontWeight: 'bold', fontSize: '0.9rem'}}>{log.item} #{log.serial}</span>
-                    <span style={{fontSize: '0.7rem', color: '#888'}}>{log.date}</span>
-                  </div>
-                  <div style={{color: 'green', fontSize: '0.7rem', fontWeight: 'bold', marginTop: '5px'}}>● {log.status}</div>
+          <div className="card" style={{ maxWidth: '450px', width: '90%', maxHeight: '80vh', overflowY: 'auto', border: '4px solid #000' }}>
+            <h3 style={{letterSpacing: '2px', fontWeight: '900'}}>MY LEDGER</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {ledger.length === 0 ? <p>Ledger empty.</p> : ledger.map(log => (
+                <div key={log.id} style={{ textAlign: 'left', padding: '12px', border: '2px solid #000', background: '#fff', boxShadow: '3px 3px 0px #000' }}>
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}><span style={{fontWeight: '950'}}>{log.item}</span><span style={{fontSize: '0.65rem'}}>{log.date}</span></div>
+                  <div style={{fontSize: '0.75rem'}}>SERIAL: {log.serial}</div>
+                  <div style={{color: '#000', fontSize: '0.7rem', fontWeight: '900', marginTop: '5px'}}>● {log.status}</div>
                 </div>
-              ))
-            )}
-            
-            <button className="roxor-btn" style={{marginTop: '20px'}} onClick={() => setViewLedger(false)}>BACK TO SANCTUARY</button>
+              ))}
+            </div>
+            <button className="roxor-btn" style={{marginTop: '20px'}} onClick={() => setViewLedger(false)}>CLOSE</button>
           </div>
         </div>
       )}
 
-      {/* --- HEADER --- */}
       <header style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 20px 20px 20px' }}>
-        <h1 className="title" style={{ fontSize: '2.5rem', fontWeight: '950', color: '#000', textTransform: 'uppercase', letterSpacing: '-1px' }}>
-          ROXOR CAVALIER SCENT
-        </h1>
+        <h1 className="title" style={{ fontSize: '2.5rem', fontWeight: '950', textAlign: 'center' }}>ROXOR CAVALIER SCENT</h1>
       </header>
 
-      {/* --- MENU & WALLET (Centered) --- */}
-      {walletAddress && (
+      {walletAddress ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
-          <button onClick={() => setIsMenuOpen(true)} style={{ background: '#fff', border: '3px solid #000', borderRadius: '10px', padding: '8px 15px', fontSize: '22px', cursor: 'pointer', boxShadow: '4px 4px 0px #000' }}>
-            ☰
-          </button>
+          <button onClick={() => setIsMenuOpen(true)} style={{ background: '#fff', border: '3px solid #000', borderRadius: '10px', padding: '8px 15px', fontSize: '22px', boxShadow: '4px 4px 0px #000' }}>☰</button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#fff', padding: '10px 20px', borderRadius: '40px', border: '3px solid #000', boxShadow: '4px 4px 0px #000' }}>
             <img src={avatar} alt="Avatar" style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid #000' }} />
-            <span style={{ fontSize: '0.9rem', fontWeight: '900', color: '#000' }}>{walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</span>
+            <span style={{ fontSize: '0.9rem', fontWeight: '900' }}>{walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</span>
           </div>
         </div>
-      )}
-
-      {!walletAddress && (
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px' }}>
-          <button id="connectButton" onClick={connectWallet} style={{ padding: '12px 24px', fontWeight: 'bold' }}>CONNECT WALLET</button>
-        </div>
+      ) : (
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px' }}><button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button></div>
       )}
 
       <main>
-        {/* ... (Main Content: Verifier, Vault, 3D tetep sama kodenya di bawah sini) ... */}
+        {/* VERIFIER */}
         <section className="main-card-section">
           <div className="card">
             <h3>PRODUCT VERIFIER</h3>
-            <p>Check the authenticity of your ROXOR fragrance.</p>
             <input type="text" id="serialInput" placeholder="e.g., RXR-VLT-001" className="roxor-input" />
-            <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>
-              VERIFY NOW
-            </button>
-            {verifStatus && <p style={{marginTop:'15px', fontWeight: 'bold', color: '#000'}}>{verifStatus}</p>}
+            <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>VERIFY NOW</button>
+            {verifStatus && <p style={{marginTop:'15px', fontWeight: 'bold'}}>{verifStatus}</p>}
           </div>
         </section>
 
-        {/* ... Masukin sisa seksi Vault, 3D, dan Scent Profile dari kode sebelumnya ... */}
-        {/* (Gue ringkas biar nggak kepanjangan di chat, tapi tetep ada di App.jsx lu) */}
+        {/* DIGITAL VAULT - MINTING BALIK LAGI! */}
+        {walletAddress && (
+          <section className="main-card-section">
+            <div className="card">
+              <h3>DIGITAL VAULT</h3>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''}`} style={{ background: '#000', border: '2px solid #333', borderRadius: '16px', width: '100%', maxWidth: '300px', overflow: 'hidden' }}>
+                  <img src="/nft-valiant.png" alt="Roxor NFT" style={{ width: '100%' }} />
+                  <div style={{ padding: '15px', color: '#fff', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.6rem', color: '#888' }}>RIALO NETWORK CERTIFIED</div>
+                    <span style={{ fontSize: '1rem', fontWeight: 'bold' }}>{mintSerial || "VALIANT"}</span>
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <input type="text" placeholder="Enter Serial" className="roxor-input" value={mintSerial} onChange={(e) => setMintSerial(e.target.value.toUpperCase())} />
+                <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting}>MINT NFT CERTIFICATE</button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 3D EXPERIENCE - BALIK LAGI! */}
+        <section className="main-card-section">
+          <div className="card" style={{ minHeight: '400px' }}>
+            <h3>VALIANT INTERACTIVE VIEW</h3>
+            <Suspense fallback={<p>Loading 3D Experience...</p>}><Valiant3D /></Suspense>
+          </div>
+        </section>
       </main>
 
-      {/* MODAL SUCCESS & NdoAI (Tetep di sini) */}
+      <div className="ndoai-container">
+        {showAI && (
+          <div className="ai-chat-window">
+            <div className="ai-header">NdoAI Assistant</div>
+            <div className="ai-content"><p><strong>NdoAI:</strong> {isAiLoading ? "..." : aiResponse}</p></div>
+            <div className="ai-footer"><input value={aiInput} onChange={(e) => setAiInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleNdoAI()} /></div>
+          </div>
+        )}
+        <button className="ai-toggle" onClick={() => setShowAI(!showAI)}>{showAI ? "X" : "🤖 NdoAI"}</button>
+      </div>
     </div>
   );
 }
