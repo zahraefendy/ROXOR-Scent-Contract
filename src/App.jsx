@@ -34,9 +34,7 @@ function App() {
     if (!serial) return;
     setVerifStatus("🔍 Syncing with Rialo..."); 
     setScentDetail(null);
-    
     const code = serial.toUpperCase();
-    
     setTimeout(() => {
         if (code.includes("VLT") || code === "RXR-VLT-001") {
             setVerifStatus("✅ AUTHENTIC PRODUCT VERIFIED"); 
@@ -96,45 +94,17 @@ function App() {
 
   return (
     <div className="App">
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 20px' }}>
+      {/* HEADER BALIK KE SETELAN AWAL BIAR RAPI */}
+      <header>
         <h1 className="title">ROXOR CAVALIER SCENT</h1>
-        
-        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-          {/* TOMBOL X (TWITTER) OFFICIAL - LINK UPDATED */}
-          <a 
-            href="https://x.com/rajaCrypto21146" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="x-link"
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              textDecoration: 'none', 
-              color: '#000', 
-              background: '#fff', 
-              padding: '8px 12px', 
-              borderRadius: '8px',
-              fontWeight: 'bold',
-              fontSize: '0.8rem',
-              border: '1px solid #000'
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ marginRight: '8px' }}>
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
-            </svg>
-            X OFFICIAL
-          </a>
-
-          {!walletAddress ? (
-            <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
-          ) : (
-            <p id="status" style={{ margin: 0 }}>ACTIVE: {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</p>
-          )}
-        </div>
+        {!walletAddress ? (
+          <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
+        ) : (
+          <p id="status">ACTIVE WALLET: {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</p>
+        )}
       </header>
 
       <main>
-        {/* 1. PRODUCT VERIFIER & GLOBAL MAP */}
         <section className="main-card-section">
           <div className="card">
             <h3>PRODUCT VERIFIER</h3>
@@ -143,9 +113,7 @@ function App() {
             <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>
               VERIFY NOW
             </button>
-            
             {verifStatus && <p className="verif-result" style={{marginTop:'15px', fontWeight: 'bold', color: '#000'}}>{verifStatus}</p>}
-            
             {scentDetail && (
               <div className="scent-verif-detail" style={{
                 marginTop: '15px', padding: '20px', border: '2px solid #000', textAlign: 'left', background: '#fff', borderRadius: '12px', color: '#000'
@@ -156,7 +124,6 @@ function App() {
                 </div>
                 <p style={{fontSize: '0.8rem', fontStyle: 'italic', color: '#333', margin: '10px 0'}}>{scentDetail.type} - {scentDetail.vibes}</p>
                 <p style={{fontSize: '0.9rem', color: '#000', lineHeight: '1.5', margin: '0 0 20px 0'}}>{scentDetail.description}</p>
-
                 <div style={{borderTop: '1px solid #eee', paddingTop: '15px'}}>
                   <p style={{fontSize: '0.7rem', fontWeight: 'bold', color: '#666', marginBottom: '8px'}}>RIALO GLOBAL ASSET MAP:</p>
                   <div style={{
@@ -171,47 +138,23 @@ function App() {
           </div>
         </section>
 
-        {/* 2. DIGITAL VAULT */}
         {walletAddress && (
           <section className="main-card-section">
             <div className="card">
               <h3>DIGITAL VAULT</h3>
               <div className="nft-display-grid" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''}`} style={{ 
-                  background: '#000', 
-                  border: '2px solid #333',
-                  padding: '0',
-                  overflow: 'hidden',
-                  borderRadius: '16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  width: '100%',
-                  maxWidth: '300px',
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                  background: '#000', border: '2px solid #333', padding: '0', overflow: 'hidden', borderRadius: '16px', display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '300px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
                 }}>
-                  <img 
-                    src="/nft-valiant.png" 
-                    alt="Roxor NFT" 
-                    style={{ width: '100%', height: 'auto', display: 'block' }} 
-                  />
+                  <img src="/nft-valiant.png" alt="Roxor NFT" style={{ width: '100%', height: 'auto', display: 'block' }} />
                   <div style={{ padding: '15px', background: '#000', color: '#fff', textAlign: 'center', borderTop: '1px solid #222' }}>
                     <div style={{ fontSize: '0.6rem', color: '#888', marginBottom: '4px', letterSpacing: '1px' }}>RIALO NETWORK CERTIFIED</div>
-                    <span style={{ fontSize: '1rem', fontWeight: 'bold', letterSpacing: '3px', textTransform: 'uppercase' }}>
-                      {mintSerial || "VALIANT"}
-                    </span>
+                    <span style={{ fontSize: '1rem', fontWeight: 'bold', letterSpacing: '3px', textTransform: 'uppercase' }}>{mintSerial || "VALIANT"}</span>
                   </div>
                 </div>
               </div>
               <div className="mint-control" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <input 
-                  type="text" 
-                  placeholder="Enter Serial (e.g. VLT-001)" 
-                  className="roxor-input"
-                  value={mintSerial}
-                  onChange={(e) => setMintSerial(e.target.value.toUpperCase())}
-                  disabled={isMinting}
-                  style={{ color: '#000', borderColor: '#000', textAlign: 'center' }}
-                />
+                <input type="text" placeholder="Enter Serial" className="roxor-input" value={mintSerial} onChange={(e) => setMintSerial(e.target.value.toUpperCase())} disabled={isMinting} style={{ color: '#000', borderColor: '#000', textAlign: 'center' }} />
                 <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting} style={{ background: '#000', color: '#fff' }}>
                   {isMinting ? "MINTING IN PROGRESS..." : "MINT NFT CERTIFICATE"}
                 </button>
@@ -220,17 +163,13 @@ function App() {
           </section>
         )}
 
-        {/* 3. INTERACTIVE 3D */}
         <section className="main-card-section">
             <div className="card" style={{ minHeight: '400px' }}>
               <h3>VALIANT INTERACTIVE VIEW</h3>
-              <Suspense fallback={<p>Loading 3D Experience...</p>}>
-                <Valiant3D />
-              </Suspense>
+              <Suspense fallback={<p>Loading 3D Experience...</p>}><Valiant3D /></Suspense>
             </div>
         </section>
 
-        {/* 4. SCENT PROFILE */}
         <section className="main-card-section variant-section">
           <div className="card scent-card">
             <h3>VALIANT SCENT PROFILE</h3>
@@ -258,11 +197,27 @@ function App() {
           <div className="roxor-success-modal">
             <div className="success-icon">✦</div>
             <h3 style={{color:'#000'}}>AUTHENTICITY SECURED</h3>
-            <p style={{color:'#333'}}>Your ROXOR Digital Certificate has been successfully written to the Rialo Ledger.</p>
             <button onClick={() => setShowSuccess(false)} className="roxor-btn" style={{padding:'10px', background:'#000', color:'#fff'}}>CLOSE</button>
           </div>
         </div>
       )}
+
+      {/* --- FITUR X MELAYANG POJOK KANAN BAWAH --- */}
+      <a 
+        href="https://x.com/rajaCrypto21146" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        style={{ 
+          position: 'fixed', bottom: '80px', right: '20px', z自index: '1000',
+          background: '#000', color: '#fff', width: '50px', height: '50px',
+          borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.3)', border: '2px solid #fff', textDecoration: 'none'
+        }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+        </svg>
+      </a>
 
       {/* NdoAI */}
       <div className="ndoai-container">
