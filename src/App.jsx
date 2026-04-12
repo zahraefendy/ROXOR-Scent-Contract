@@ -8,6 +8,7 @@ import Valiant3D from './Valiant3D'
 function App() {
   const [walletAddress, setWalletAddress] = useState("")
   const [avatar, setAvatar] = useState("") 
+  const [isMenuOpen, setIsMenuOpen] = useState(false); 
   const [verifStatus, setVerifStatus] = useState("")
   const [scentDetail, setScentDetail] = useState(null)
   const [mintSerial, setMintSerial] = useState("");
@@ -84,7 +85,7 @@ function App() {
       const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
       const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      const prompt = `You are NdoAI, a professional luxury assistant for ROXOR. Product: Valiant (Sauvage Dior inspired, Extrait 1:1). Question: ${aiInput}`;
+      const prompt = `You are NdoAI, a professional luxury assistant for ROXOR. Product: Valiant. Question: ${aiInput}`;
       const result = await model.generateContent(prompt);
       setAiResponse(result.response.text());
     } catch (err) {
@@ -95,50 +96,101 @@ function App() {
     }
   };
 
+  const menuItemStyle = {
+    background: 'none', border: 'none', textAlign: 'left', fontSize: '1.1rem',
+    fontWeight: '900', color: '#000', cursor: 'pointer', padding: '15px 10px',
+    borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '15px',
+    borderBottom: '1px solid #f0f0f0'
+  };
+
   return (
     <div className="App">
       
-      {/* HEADER AREA - SEMUA RATA TENGAH */}
+      {/* --- DASHBOARD MENU OVERLAY (X-STYLE) --- */}
+      {isMenuOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+          background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(12px)', zIndex: 10000
+        }} onClick={() => setIsMenuOpen(false)}>
+          
+          <div style={{
+            width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000',
+            padding: '40px 20px', display: 'flex', flexDirection: 'column',
+            boxShadow: '15px 0 30px rgba(0,0,0,0.1)', animation: 'slideIn 0.3s ease-out'
+          }} onClick={(e) => e.stopPropagation()}>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
+              <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'bold' }}>R</div>
+              <h2 style={{ color: '#000', margin: 0, fontSize: '1.5rem', letterSpacing: '2px' }}>ROXOR HUB</h2>
+            </div>
+
+            <nav style={{ display: 'flex', flexDirection: 'column' }}>
+              <button style={menuItemStyle} onClick={() => setIsMenuOpen(false)}>🏠 Sanctuary</button>
+              <button style={menuItemStyle} onClick={() => alert("Dashboard: Your verification history is coming soon!")}>📊 My Ledger</button>
+              <button style={menuItemStyle} onClick={() => alert("Vault: View your minted Valiant NFTs here soon.")}>🖼️ Digital Vault</button>
+              <button style={menuItemStyle} onClick={() => alert("Council: Vote for the next ROXOR scent variant.")}>⚖️ Scent Council</button>
+              <button style={menuItemStyle} onClick={() => window.open('https://x.com/roxorcavalier', '_blank')}>📱 Community</button>
+            </nav>
+
+            <button 
+              onClick={() => setIsMenuOpen(false)}
+              style={{ marginTop: 'auto', background: '#000', color: '#fff', border: 'none', padding: '15px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              CLOSE
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* --- HEADER AREA --- */}
       <header style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        padding: '40px 20px 20px 20px' 
+        display: 'flex', alignItems: 'center', justifyContent: 'center', 
+        padding: '30px 20px', position: 'relative', minHeight: '80px'
       }}>
         
-        {/* JUDUL TETEP DI TENGAH */}
-        <h1 className="title" style={{ margin: '0 0 20px 0', textAlign: 'center' }}>
+        {walletAddress && (
+          <button 
+            onClick={() => setIsMenuOpen(true)}
+            style={{ 
+              position: 'absolute', left: '20px', background: '#fff', 
+              border: '2px solid #000', borderRadius: '8px', padding: '6px 12px', 
+              fontSize: '20px', cursor: 'pointer', boxShadow: '3px 3px 0px #000', zIndex: 10
+            }}
+          >
+            ☰
+          </button>
+        )}
+
+        <h1 className="title" style={{ margin: 0, textAlign: 'center', fontSize: '1.4rem', padding: '0 50px' }}>
           ROXOR CAVALIER SCENT
         </h1>
+      </header>
 
-        {/* AREA PROFIL / TOMBOL (Di bawah judul) */}
-        {walletAddress ? (
+      {/* Wallet Display - Centered Below Title */}
+      {walletAddress && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
           <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '10px',
-            background: '#fff', 
-            padding: '8px 16px', 
-            borderRadius: '30px',
-            border: '2px solid #000',
-            boxShadow: '4px 4px 0px #000' 
+            display: 'flex', alignItems: 'center', gap: '10px', background: '#fff', 
+            padding: '6px 16px', borderRadius: '30px', border: '2px solid #000', boxShadow: '4px 4px 0px #000' 
           }}>
-            <img 
-              src={avatar} 
-              alt="Avatar" 
-              style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1px solid #000' }} 
-            />
-            <span style={{ fontSize: '0.85rem', fontWeight: '900', color: '#000', letterSpacing: '1px' }}>
+            <img src={avatar} alt="Avatar" style={{ width: '22px', height: '22px', borderRadius: '50%', border: '1px solid #000' }} />
+            <span style={{ fontSize: '0.8rem', fontWeight: '900', color: '#000', letterSpacing: '1px' }}>
               {walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}
             </span>
           </div>
-        ) : (
-          <button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button>
-        )}
-      </header>
+        </div>
+      )}
+
+      {!walletAddress && (
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
+          <button id="connectButton" onClick={connectWallet} style={{ padding: '12px 24px', fontWeight: 'bold', cursor: 'pointer' }}>
+            CONNECT WALLET
+          </button>
+        </div>
+      )}
 
       <main>
+        {/* PRODUCT VERIFIER */}
         <section className="main-card-section">
           <div className="card">
             <h3>PRODUCT VERIFIER</h3>
@@ -148,6 +200,7 @@ function App() {
               VERIFY NOW
             </button>
             {verifStatus && <p className="verif-result" style={{marginTop:'15px', fontWeight: 'bold', color: '#000'}}>{verifStatus}</p>}
+            
             {scentDetail && (
               <div className="scent-verif-detail" style={{
                 marginTop: '15px', padding: '20px', border: '2px solid #000', textAlign: 'left', background: '#fff', borderRadius: '12px', color: '#000'
@@ -163,6 +216,7 @@ function App() {
           </div>
         </section>
 
+        {/* DIGITAL VAULT (MINTING) */}
         {walletAddress && (
           <section className="main-card-section">
             <div className="card">
@@ -188,6 +242,7 @@ function App() {
           </section>
         )}
 
+        {/* 3D EXPERIENCE */}
         <section className="main-card-section">
             <div className="card" style={{ minHeight: '400px' }}>
               <h3>VALIANT INTERACTIVE VIEW</h3>
@@ -195,6 +250,7 @@ function App() {
             </div>
         </section>
 
+        {/* SCENT PROFILE */}
         <section className="main-card-section variant-section">
           <div className="card scent-card">
             <h3>VALIANT SCENT PROFILE</h3>
@@ -216,17 +272,19 @@ function App() {
         </section>
       </main>
 
+      {/* SUCCESS MODAL */}
       {showSuccess && (
         <div className="roxor-modal-overlay">
           <div className="roxor-success-modal">
             <div className="success-icon">✦</div>
             <h3 style={{color:'#000'}}>AUTHENTICITY SECURED</h3>
+            <p style={{color:'#666'}}>Your digital certificate has been minted on the Rialo Network.</p>
             <button onClick={() => setShowSuccess(false)} className="roxor-btn" style={{padding:'10px', background:'#000', color:'#fff'}}>CLOSE</button>
           </div>
         </div>
       )}
 
-      {/* LINK X Twitter */}
+      {/* X / TWITTER LINK */}
       <a 
         href="https://x.com/roxorcavalier" 
         target="_blank" 
@@ -243,14 +301,14 @@ function App() {
         </svg>
       </a>
 
-      {/* NdoAI */}
+      {/* NdoAI ASSISTANT */}
       <div className="ndoai-container">
         {showAI && (
           <div className="ai-chat-window">
             <div className="ai-header">NdoAI Assistant</div>
             <div className="ai-content"><p><strong>NdoAI:</strong> {isAiLoading ? "..." : aiResponse}</p></div>
             <div className="ai-footer">
-              <input value={aiInput} onChange={(e) => setAiInput(e.target.value)} placeholder="Ask..." onKeyPress={(e) => e.key === 'Enter' && handleNdoAI()} />
+              <input value={aiInput} onChange={(e) => setAiInput(e.target.value)} placeholder="Ask anything about ROXOR..." onKeyPress={(e) => e.key === 'Enter' && handleNdoAI()} />
             </div>
           </div>
         )}
