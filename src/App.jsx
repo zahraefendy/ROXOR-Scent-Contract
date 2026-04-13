@@ -5,7 +5,6 @@ import './App.css'
 import abiNFT from './abiNFT.json'
 import Valiant3D from './Valiant3D'
 
-// IKON SVG
 const Icons = {
   Sanctuary: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -36,10 +35,12 @@ function App() {
   const [mintSerial, setMintSerial] = useState("");
   const [isMinting, setIsMinting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  
   const [ledger, setLedger] = useState([]);
   const [viewLedger, setViewLedger] = useState(false);
   const [viewVault, setViewVault] = useState(false);
-  const [userNfts, setUserNfts] = useState([]); 
+  const [userNfts, setUserNfts] = useState([]);
+
   const [showAI, setShowAI] = useState(false);
   const [aiInput, setAiInput] = useState("");
   const [aiResponse, setAiResponse] = useState("Welcome to ROXOR, Sir.");
@@ -120,35 +121,41 @@ function App() {
 
   return (
     <div className="App">
-      {/* SIDEBAR */}
+      {/* SIDEBAR MODAL - BALIK KE STYLE SEBELUMNYA */}
       {isMenuOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(12px)', zIndex: 10000 }} onClick={() => setIsMenuOpen(false)}>
-          <div style={{ width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000', padding: '40px 20px' }} onClick={(e) => e.stopPropagation()}>
+          <div style={{ width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000', padding: '40px 20px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
+              <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'bold' }}>R</div>
+              <h2 style={{ color: '#000', margin: 0, fontSize: '1.5rem', letterSpacing: '2px' }}>ROXOR HUB</h2>
+            </div>
             <nav style={{ display: 'flex', flexDirection: 'column' }}>
               <button style={menuItemStyle} onClick={() => {setIsMenuOpen(false); setViewLedger(false); setViewVault(false);}}>{Icons.Sanctuary} Sanctuary</button>
               <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>{Icons.Ledger} My Ledger</button>
               <button style={menuItemStyle} onClick={() => { if(!walletAddress) return alert("Connect Wallet!"); setViewVault(true); setIsMenuOpen(false); }}>{Icons.Vault} Digital Vault</button>
               <button style={menuItemStyle} onClick={() => alert("Scent Council coming soon.")}>{Icons.Council} Scent Council</button>
               <button style={menuItemStyle} onClick={() => window.open('https://rialobs.vercel.app/', '_blank')}>{Icons.SharkTank} Shark Tank Rialo</button>
+              <button style={menuItemStyle} onClick={() => window.open('https://x.com/roxorcavalier', '_blank')}>{Icons.Community} Community</button>
             </nav>
+            <button onClick={() => setIsMenuOpen(false)} style={{ marginTop: 'auto', background: '#000', color: '#fff', border: 'none', padding: '15px', borderRadius: '10px', fontWeight: 'bold' }}>CLOSE</button>
           </div>
         </div>
       )}
 
-      {/* VAULT MODAL */}
+      {/* VAULT GALLERY MODAL */}
       {viewVault && (
         <div className="roxor-modal-overlay" style={{zIndex: 11000}}>
-          <div className="card" style={{ maxWidth: '600px', border: '4px solid #000' }}>
-            <h3>DIGITAL VAULT</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '10px' }}>
+          <div className="card" style={{ maxWidth: '600px', width: '95%', border: '4px solid #000' }}>
+            <h3 style={{fontWeight: '900'}}>DIGITAL VAULT</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '15px' }}>
               {userNfts.map(nft => (
-                <div key={nft.id} style={{ background: '#000', borderRadius: '10px', color: '#fff', padding: '5px' }}>
+                <div key={nft.id} style={{ background: '#000', borderRadius: '12px', overflow: 'hidden', border: '2px solid #000', color: '#fff' }}>
                   <img src={nft.img} style={{ width: '100%' }} />
-                  <div style={{fontSize: '0.6rem', padding: '5px'}}>{nft.serial}</div>
+                  <div style={{ padding: '10px', fontSize: '0.7rem' }}><b>{nft.name}</b><br/>{nft.serial}</div>
                 </div>
               ))}
             </div>
-            <button className="roxor-btn" onClick={() => setViewVault(false)}>CLOSE</button>
+            <button className="roxor-btn" style={{marginTop: '20px'}} onClick={() => setViewVault(false)}>CLOSE</button>
           </div>
         </div>
       )}
@@ -156,64 +163,86 @@ function App() {
       {/* LEDGER MODAL */}
       {viewLedger && (
         <div className="roxor-modal-overlay" style={{zIndex: 11000}}>
-          <div className="card">
-            <h3>MY LEDGER</h3>
-            {ledger.map(log => <div key={log.id} style={{border: '2px solid #000', padding: '10px', marginBottom: '5px'}}>{log.item} - {log.serial}</div>)}
-            <button className="roxor-btn" onClick={() => setViewLedger(false)}>CLOSE</button>
+          <div className="card" style={{ maxWidth: '450px', border: '4px solid #000' }}>
+            <h3 style={{fontWeight: '900'}}>MY LEDGER</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {ledger.length === 0 ? <p>No records.</p> : ledger.map(log => (
+                <div key={log.id} style={{ textAlign: 'left', padding: '12px', border: '2px solid #000', background: '#fff', boxShadow: '3px 3px 0px #000' }}>
+                  <b>{log.item}</b><br/><small>{log.serial} - {log.date}</small>
+                </div>
+              ))}
+            </div>
+            <button className="roxor-btn" style={{marginTop: '20px'}} onClick={() => setViewLedger(false)}>CLOSE</button>
           </div>
         </div>
       )}
 
-      <header style={{ padding: '40px' }}><h1 className="title">ROXOR CAVALIER SCENT</h1></header>
+      <header style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 20px 20px 20px' }}>
+        <h1 className="title" style={{ fontSize: '2.5rem', fontWeight: '950' }}>ROXOR CAVALIER SCENT</h1>
+      </header>
 
       {walletAddress ? (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
-          <button onClick={() => setIsMenuOpen(true)} className="roxor-btn">☰</button>
-          <div className="roxor-input" style={{width: 'auto'}}>{walletAddress.slice(0,6)}...{walletAddress.slice(-4)}</div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
+          <button onClick={() => setIsMenuOpen(true)} style={{ background: '#fff', border: '3px solid #000', borderRadius: '10px', padding: '8px 15px', fontSize: '22px', boxShadow: '4px 4px 0px #000' }}>☰</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#fff', padding: '10px 20px', borderRadius: '40px', border: '3px solid #000', boxShadow: '4px 4px 0px #000' }}>
+            <img src={avatar} alt="Avatar" style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid #000' }} />
+            <span style={{ fontSize: '0.9rem', fontWeight: '900' }}>{walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</span>
+          </div>
         </div>
-      ) : <button className="roxor-btn" onClick={connectWallet}>CONNECT WALLET</button>}
+      ) : (
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px' }}><button id="connectButton" onClick={connectWallet}>CONNECT WALLET</button></div>
+      )}
 
       <main>
-        {/* VERIFIER & SCENT DETAIL (AMAN) */}
         <section className="main-card-section">
           <div className="card">
             <h3>PRODUCT VERIFIER</h3>
-            <input id="serialInput" placeholder="RXR-VLT-001" className="roxor-input" />
-            <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>VERIFY</button>
-            {verifStatus && <p>{verifStatus}</p>}
+            <input type="text" id="serialInput" placeholder="RXR-VLT-001" className="roxor-input" />
+            <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>VERIFY NOW</button>
+            {verifStatus && <p style={{marginTop:'15px', fontWeight: 'bold'}}>{verifStatus}</p>}
+            
             {scentDetail && (
-              <div style={{textAlign: 'left', borderTop: '1px solid #000', marginTop: '10px'}}>
-                <h4>{scentDetail.name}</h4><p>{scentDetail.vibes}</p><p>{scentDetail.description}</p>
+              <div style={{marginTop: '20px', textAlign: 'left', borderTop: '2px solid #eee', paddingTop: '15px'}}>
+                <h4 style={{margin: '0'}}>{scentDetail.name}</h4>
+                <p style={{fontSize: '0.85rem', fontStyle: 'italic'}}>{scentDetail.vibes}</p>
+                <p style={{fontSize: '0.85rem'}}>{scentDetail.description}</p>
+                <div style={{background: '#f9f9f9', padding: '5px', fontSize: '0.7rem', fontWeight: 'bold'}}>{scentDetail.batch}</div>
               </div>
             )}
           </div>
         </section>
 
-        {/* MINT SECTION (AMAN) */}
         {walletAddress && (
           <section className="main-card-section">
             <div className="card">
               <h3>MINT CERTIFICATE</h3>
-              <input placeholder="Serial" className="roxor-input" value={mintSerial} onChange={(e) => setMintSerial(e.target.value.toUpperCase())} />
+              <input type="text" placeholder="Enter Serial" className="roxor-input" value={mintSerial} onChange={(e) => setMintSerial(e.target.value.toUpperCase())} />
               <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting}>MINT NFT</button>
+              {showSuccess && <p style={{color: 'green'}}>Minting Success!</p>}
             </div>
           </section>
         )}
 
-        {/* 3D VIEW (AMAN) */}
         <section className="main-card-section">
-          <div className="card" style={{height: '400px'}}>
-            <Suspense fallback={<p>Loading 3D...</p>}><Valiant3D /></Suspense>
+          <div className="card" style={{ minHeight: '400px' }}>
+            <h3>VALIANT INTERACTIVE VIEW</h3>
+            <Suspense fallback={<p>Loading 3D Experience...</p>}><Valiant3D /></Suspense>
           </div>
         </section>
       </main>
 
-      {/* NdoAI (AMAN) */}
       <div className="ndoai-container">
-        {showAI && <div className="ai-chat-window">{aiResponse}</div>}
-        <button className="ai-toggle" onClick={() => setShowAI(!showAI)}>🤖 NdoAI</button>
+        {showAI && (
+          <div className="ai-chat-window">
+            <div className="ai-header">NdoAI Assistant</div>
+            <div className="ai-content"><p><strong>NdoAI:</strong> {isAiLoading ? "..." : aiResponse}</p></div>
+            <div className="ai-footer"><input value={aiInput} onChange={(e) => setAiInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleNdoAI()} /></div>
+          </div>
+        )}
+        <button className="ai-toggle" onClick={() => setShowAI(!showAI)}>{showAI ? "X" : "🤖 NdoAI"}</button>
       </div>
     </div>
   );
 }
+
 export default App;
