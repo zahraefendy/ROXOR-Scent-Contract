@@ -82,8 +82,9 @@ function App() {
             });
             setVerifStatus("✅ AUTHENTIC PRODUCT VERIFIED"); 
             const newEntry = { id: Date.now(), date: new Date().toLocaleString(), item: "Valiant", serial: code, status: "AUTHENTIC" };
-            setLedger([newEntry, ...ledger]);
-            localStorage.setItem('roxor_ledger', JSON.stringify([newEntry, ...ledger]));
+            const updatedLedger = [newEntry, ...ledger];
+            setLedger(updatedLedger);
+            localStorage.setItem('roxor_ledger', JSON.stringify(updatedLedger));
         } else {
             setVerifStatus("❌ INVALID CODE!");
         }
@@ -117,11 +118,18 @@ function App() {
     } catch (err) { setAiResponse("System busy."); } finally { setIsAiLoading(false); setAiInput(""); }
   };
 
+  // LOGIKA "KODE SAKTI" BIAR BALIK KE MENU
+  const closeAndReturn = () => {
+    setViewLedger(false);
+    setViewVault(false);
+    setIsMenuOpen(true);
+  };
+
   const menuItemStyle = { background: 'none', border: 'none', textAlign: 'left', fontSize: '1.1rem', fontWeight: '900', color: '#000', cursor: 'pointer', padding: '15px 10px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '15px', borderBottom: '1px solid #f0f0f0', width: '100%' };
 
   return (
     <div className="App">
-      {/* SIDEBAR MODAL - BALIK KE STYLE SEBELUMNYA */}
+      {/* SIDEBAR MODAL */}
       {isMenuOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(12px)', zIndex: 10000 }} onClick={() => setIsMenuOpen(false)}>
           <div style={{ width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000', padding: '40px 20px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
@@ -150,12 +158,13 @@ function App() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '15px' }}>
               {userNfts.map(nft => (
                 <div key={nft.id} style={{ background: '#000', borderRadius: '12px', overflow: 'hidden', border: '2px solid #000', color: '#fff' }}>
-                  <img src={nft.img} style={{ width: '100%' }} />
+                  <img src={nft.img} style={{ width: '100%' }} alt="NFT" />
                   <div style={{ padding: '10px', fontSize: '0.7rem' }}><b>{nft.name}</b><br/>{nft.serial}</div>
                 </div>
               ))}
             </div>
-            <button className="roxor-btn" style={{marginTop: '20px'}} onClick={() => setViewVault(false)}>CLOSE</button>
+            {/* KLIK CLOSE LANGSUNG BALIK KE PILIHAN MENU */}
+            <button className="roxor-btn" style={{marginTop: '20px'}} onClick={closeAndReturn}>CLOSE</button>
           </div>
         </div>
       )}
@@ -172,7 +181,8 @@ function App() {
                 </div>
               ))}
             </div>
-            <button className="roxor-btn" style={{marginTop: '20px'}} onClick={() => setViewLedger(false)}>CLOSE</button>
+            {/* KLIK CLOSE LANGSUNG BALIK KE PILIHAN MENU */}
+            <button className="roxor-btn" style={{marginTop: '20px'}} onClick={closeAndReturn}>CLOSE</button>
           </div>
         </div>
       )}
