@@ -5,7 +5,7 @@ import './App.css'
 import abiNFT from './abiNFT.json'
 import Valiant3D from './Valiant3D'
 
-// OBJEK IKON SVG INLINE (Clean & Minimalis)
+// OBJEK IKON SVG INLINE
 const Icons = {
   Sanctuary: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -66,18 +66,50 @@ function App() {
   function checkProduct(serial) {
     if (!serial) return;
     setVerifStatus("🔍 Syncing with Rialo..."); 
+    setScentDetail(null);
     const code = serial.toUpperCase();
+    
     setTimeout(() => {
         if (code.includes("VLT") || code === "RXR-VLT-001") {
+            const detail = {
+              name: "VALIANT",
+              type: "Extrait de Parfum",
+              vibes: "Fresh, Spicy, & Woody",
+              batch: "BATCH: RXR-VLT-2026",
+              description: "A powerful and noble composition. Valiant opens with the radiant freshness of Calabrian Bergamot and Pepper."
+            };
             setVerifStatus("✅ AUTHENTIC PRODUCT VERIFIED"); 
-            const newEntry = { id: Date.now(), date: new Date().toLocaleString(), item: "Valiant", serial: code, status: "AUTHENTIC" };
+            setScentDetail(detail);
+
+            const newEntry = {
+              id: Date.now(),
+              date: new Date().toLocaleString(),
+              item: "Valiant",
+              serial: code,
+              status: "AUTHENTIC"
+            };
             const updatedLedger = [newEntry, ...ledger];
             setLedger(updatedLedger);
             localStorage.setItem('roxor_ledger', JSON.stringify(updatedLedger));
         } else {
-            setVerifStatus("❌ INVALID CODE!");
+            setVerifStatus("❌ INVALID CODE! Product not recognized.");
+            setScentDetail(null);
         }
     }, 600);
+  }
+
+  async function mintSertifikat() {
+    if (!walletAddress || !mintSerial) return;
+    setIsMinting(true);
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const nftContract = new ethers.Contract(nftAddress, abiNFT, signer);
+      const tx = await nftContract.mintCertificate(walletAddress, `https://roxor.id/cert/${mintSerial}`);
+      await tx.wait();
+      setShowSuccess(true);
+      setMintSerial("");
+    } catch (err) { console.error(err); } finally { setIsMinting(false); }
   }
 
   const handleNdoAI = async () => {
@@ -102,7 +134,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* MENU SIDEBAR */}
+      {/* MENU OVERLAY */}
       {isMenuOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(12px)', zIndex: 10000 }} onClick={() => setIsMenuOpen(false)}>
           <div style={{ width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000', padding: '40px 20px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
@@ -115,15 +147,7 @@ function App() {
               <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>{Icons.Ledger} My Ledger</button>
               <button style={menuItemStyle} onClick={() => alert("Digital Vault coming soon.")}>{Icons.Vault} Digital Vault</button>
               <button style={menuItemStyle} onClick={() => alert("Scent Council coming soon.")}>{Icons.Council} Scent Council</button>
-              
-              {/* MENU SHARK TANK RIALO */}
-              <button 
-                style={menuItemStyle} 
-                onClick={() => window.open('https://rialobs.vercel.app/', '_blank')}
-              >
-                {Icons.SharkTank} Shark Tank Rialo
-              </button>
-
+              <button style={menuItemStyle} onClick={() => window.open('https://rialobs.vercel.app/', '_blank')}>{Icons.SharkTank} Shark Tank Rialo</button>
               <button style={menuItemStyle} onClick={() => window.open('https://x.com/roxorcavalier', '_blank')}>{Icons.Community} Community</button>
             </nav>
             <button onClick={() => setIsMenuOpen(false)} style={{ marginTop: 'auto', background: '#000', color: '#fff', border: 'none', padding: '15px', borderRadius: '10px', fontWeight: 'bold' }}>CLOSE</button>
@@ -131,7 +155,25 @@ function App() {
         </div>
       )}
 
-      {/* HEADER & MAIN CONTENT */}
+      {/* LEDGER MODAL */}
+      {viewLedger && (
+        <div className="roxor-modal-overlay" style={{zIndex: 11000}}>
+          <div className="card" style={{ maxWidth: '450px', width: '90%', maxHeight: '80vh', overflowY: 'auto', border: '4px solid #000' }}>
+            <h3 style={{letterSpacing: '2px', fontWeight: '900'}}>MY LEDGER</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {ledger.length === 0 ? <p>Ledger empty.</p> : ledger.map(log => (
+                <div key={log.id} style={{ textAlign: 'left', padding: '12px', border: '2px solid #000', background: '#fff', boxShadow: '3px 3px 0px #000' }}>
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}><span style={{fontWeight: '950'}}>{log.item}</span><span style={{fontSize: '0.65rem'}}>{log.date}</span></div>
+                  <div style={{fontSize: '0.75rem'}}>SERIAL: {log.serial}</div>
+                  <div style={{color: '#000', fontSize: '0.7rem', fontWeight: '900', marginTop: '5px'}}>● {log.status}</div>
+                </div>
+              ))}
+            </div>
+            <button className="roxor-btn" style={{marginTop: '20px'}} onClick={() => setViewLedger(false)}>CLOSE</button>
+          </div>
+        </div>
+      )}
+
       <header style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 20px 20px 20px' }}>
         <h1 className="title" style={{ fontSize: '2.5rem', fontWeight: '950', textAlign: 'center' }}>ROXOR CAVALIER SCENT</h1>
       </header>
@@ -149,6 +191,49 @@ function App() {
       )}
 
       <main>
+        {/* PRODUCT VERIFIER (BALIK LAGI) */}
+        <section className="main-card-section">
+          <div className="card">
+            <h3>PRODUCT VERIFIER</h3>
+            <input type="text" id="serialInput" placeholder="e.g., RXR-VLT-001" className="roxor-input" />
+            <button className="roxor-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>VERIFY NOW</button>
+            {verifStatus && <p style={{marginTop:'15px', fontWeight: 'bold'}}>{verifStatus}</p>}
+            
+            {/* DETAIL AROMA (BALIK LAGI) */}
+            {scentDetail && (
+              <div style={{marginTop: '20px', textAlign: 'left', borderTop: '2px solid #eee', paddingTop: '15px'}}>
+                <h4 style={{margin: '0 0 5px 0', color: '#000'}}>{scentDetail.name} - {scentDetail.type}</h4>
+                <p style={{fontSize: '0.9rem', fontStyle: 'italic', margin: '0 0 10px 0'}}>{scentDetail.vibes}</p>
+                <p style={{fontSize: '0.85rem', lineHeight: '1.4'}}>{scentDetail.description}</p>
+                <div style={{background: '#f9f9f9', padding: '5px 10px', fontSize: '0.75rem', fontWeight: 'bold', display: 'inline-block'}}>{scentDetail.batch}</div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* MINT NFT SECTION (BALIK LAGI) */}
+        {walletAddress && (
+          <section className="main-card-section">
+            <div className="card">
+              <h3>DIGITAL VAULT</h3>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+                <div className={`nft-card-visual ${isMinting ? 'shimmer' : ''}`} style={{ background: '#000', border: '2px solid #333', borderRadius: '16px', width: '100%', maxWidth: '300px', overflow: 'hidden' }}>
+                  <img src="/nft-valiant.png" alt="Roxor NFT" style={{ width: '100%' }} />
+                  <div style={{ padding: '15px', color: '#fff', textAlign: 'center' }}>
+                    <div style={{ fontSize: '0.6rem', color: '#888' }}>RIALO NETWORK CERTIFIED</div>
+                    <span style={{ fontSize: '1rem', fontWeight: 'bold' }}>{mintSerial || "VALIANT"}</span>
+                  </div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <input type="text" placeholder="Enter Serial" className="roxor-input" value={mintSerial} onChange={(e) => setMintSerial(e.target.value.toUpperCase())} />
+                <button className="roxor-btn" onClick={mintSertifikat} disabled={isMinting}>MINT NFT CERTIFICATE</button>
+                {showSuccess && <p style={{color: 'green', fontWeight: 'bold'}}>Successfully Minted!</p>}
+              </div>
+            </div>
+          </section>
+        )}
+
         <section className="main-card-section">
           <div className="card" style={{ minHeight: '400px' }}>
             <h3>VALIANT INTERACTIVE VIEW</h3>
@@ -157,7 +242,6 @@ function App() {
         </section>
       </main>
 
-      {/* NdoAI CHAT TOGGLE */}
       <div className="ndoai-container">
         {showAI && (
           <div className="ai-chat-window">
