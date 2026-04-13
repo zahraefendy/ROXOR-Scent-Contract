@@ -5,6 +5,25 @@ import './App.css'
 import abiNFT from './abiNFT.json'
 import Valiant3D from './Valiant3D'
 
+// OBJEK IKON SVG INLINE (Tanpa Install Library)
+const Icons = {
+  Sanctuary: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  ),
+  Ledger: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M8 7h6"/><path d="M8 11h8"/></svg>
+  ),
+  Vault: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M12 9v1"/><path d="M12 14v1"/><path d="M9 12h1"/><path d="M14 12h1"/></svg>
+  ),
+  Council: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m14 13 4 2 3-6-4-2-3 6Z"/><path d="m4 9 3 6 4-2-3-6-4 2Z"/><path d="M12 2v20"/><path d="M2 22h20"/></svg>
+  ),
+  Community: (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+  )
+};
+
 function App() {
   const [walletAddress, setWalletAddress] = useState("")
   const [avatar, setAvatar] = useState("") 
@@ -136,11 +155,11 @@ function App() {
               <h2 style={{ color: '#000', margin: 0, fontSize: '1.5rem', letterSpacing: '2px' }}>ROXOR HUB</h2>
             </div>
             <nav style={{ display: 'flex', flexDirection: 'column' }}>
-              <button style={menuItemStyle} onClick={() => {setIsMenuOpen(false); setViewLedger(false);}}>🏠 Sanctuary</button>
-              <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>📊 My Ledger</button>
-              <button style={menuItemStyle} onClick={() => alert("Digital Vault coming soon.")}>🖼️ Digital Vault</button>
-              <button style={menuItemStyle} onClick={() => alert("Scent Council coming soon.")}>⚖️ Scent Council</button>
-              <button style={menuItemStyle} onClick={() => window.open('https://x.com/roxorcavalier', '_blank')}>📱 Community</button>
+              <button style={menuItemStyle} onClick={() => {setIsMenuOpen(false); setViewLedger(false);}}>{Icons.Sanctuary} Sanctuary</button>
+              <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>{Icons.Ledger} My Ledger</button>
+              <button style={menuItemStyle} onClick={() => alert("Digital Vault coming soon.")}>{Icons.Vault} Digital Vault</button>
+              <button style={menuItemStyle} onClick={() => alert("Scent Council coming soon.")}>{Icons.Council} Scent Council</button>
+              <button style={menuItemStyle} onClick={() => window.open('https://x.com/roxorcavalier', '_blank')}>{Icons.Community} Community</button>
             </nav>
             <button onClick={() => setIsMenuOpen(false)} style={{ marginTop: 'auto', background: '#000', color: '#fff', border: 'none', padding: '15px', borderRadius: '10px', fontWeight: 'bold' }}>CLOSE</button>
           </div>
@@ -183,7 +202,6 @@ function App() {
       )}
 
       <main>
-        {/* VERIFIER */}
         <section className="main-card-section">
           <div className="card">
             <h3>PRODUCT VERIFIER</h3>
@@ -193,7 +211,6 @@ function App() {
           </div>
         </section>
 
-        {/* DIGITAL VAULT - MINTING BALIK LAGI! */}
         {walletAddress && (
           <section className="main-card-section">
             <div className="card">
@@ -215,7 +232,6 @@ function App() {
           </section>
         )}
 
-        {/* 3D EXPERIENCE - BALIK LAGI! */}
         <section className="main-card-section">
           <div className="card" style={{ minHeight: '400px' }}>
             <h3>VALIANT INTERACTIVE VIEW</h3>
