@@ -23,6 +23,10 @@ const Icons = {
   ),
   Community: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+  ),
+  // Icon Art Baru buat NdoAI
+  Sparkles: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M3 5h4"/><path d="M21 17v4"/><path d="M19 19h4"/></svg>
   )
 };
 
@@ -118,7 +122,6 @@ function App() {
     } catch (err) { setAiResponse("System busy."); } finally { setIsAiLoading(false); setAiInput(""); }
   };
 
-  // LOGIKA "KODE SAKTI" BIAR BALIK KE MENU
   const closeAndReturn = () => {
     setViewLedger(false);
     setViewVault(false);
@@ -163,7 +166,6 @@ function App() {
                 </div>
               ))}
             </div>
-            {/* KLIK CLOSE LANGSUNG BALIK KE PILIHAN MENU */}
             <button className="roxor-btn" style={{marginTop: '20px'}} onClick={closeAndReturn}>CLOSE</button>
           </div>
         </div>
@@ -181,7 +183,6 @@ function App() {
                 </div>
               ))}
             </div>
-            {/* KLIK CLOSE LANGSUNG BALIK KE PILIHAN MENU */}
             <button className="roxor-btn" style={{marginTop: '20px'}} onClick={closeAndReturn}>CLOSE</button>
           </div>
         </div>
@@ -246,10 +247,17 @@ function App() {
           <div className="ai-chat-window">
             <div className="ai-header">NdoAI Assistant</div>
             <div className="ai-content"><p><strong>NdoAI:</strong> {isAiLoading ? "..." : aiResponse}</p></div>
-            <div className="ai-footer"><input value={aiInput} onChange={(e) => setAiInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleNdoAI()} /></div>
+            <div className="ai-footer"><input value={aiInput} onChange={(e) => setAiInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleNdoAI()} placeholder="Ask NdoAI..." /></div>
           </div>
         )}
-        <button className="ai-toggle" onClick={() => setShowAI(!showAI)}>{showAI ? "X" : "🤖 NdoAI"}</button>
+        <button className="ai-toggle" onClick={() => setShowAI(!showAI)}>
+          {showAI ? "✕" : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {Icons.Sparkles}
+              <span style={{fontWeight: '900'}}>NDO AI</span>
+            </div>
+          )}
+        </button>
       </div>
     </div>
   );
