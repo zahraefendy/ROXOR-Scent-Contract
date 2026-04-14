@@ -24,9 +24,12 @@ const Icons = {
   Community: (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
   ),
-  // Icon Art Baru buat NdoAI
   Sparkles: (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M3 5h4"/><path d="M21 17v4"/><path d="M19 19h4"/></svg>
+  ),
+  // MODIF: Tambah Art Perfume yang mewah buat placeholder NFT
+  ArtPerfume: (
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 4V2h6v2M12 4V2M10 4h4v3h-4zM7 7h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2zM12 11v4M10 13h4"/></svg>
   )
 };
 
@@ -56,7 +59,7 @@ function App() {
     const savedLedger = localStorage.getItem('roxor_ledger');
     if (savedLedger) setLedger(JSON.parse(savedLedger));
     if (walletAddress) {
-      setUserNfts([{ id: 1, name: "VALIANT", serial: "RXR-VLT-001", type: "Extrait de Parfum", img: "/nft-valiant.png" }]);
+      setUserNfts([{ id: 1, name: "VALIANT", serial: "RXR-VLT-001", type: "Extrait de Parfum" }]);
     }
   }, [walletAddress]);
 
@@ -105,7 +108,7 @@ function App() {
       const tx = await nftContract.mintCertificate(walletAddress, `https://roxor.id/cert/${mintSerial}`);
       await tx.wait();
       setShowSuccess(true);
-      setUserNfts([...userNfts, { id: Date.now(), name: "VALIANT", serial: mintSerial, img: "/nft-valiant.png" }]);
+      setUserNfts([...userNfts, { id: Date.now(), name: "VALIANT", serial: mintSerial }]);
       setMintSerial("");
     } catch (err) { console.error(err); } finally { setIsMinting(false); }
   }
@@ -153,16 +156,22 @@ function App() {
         </div>
       )}
 
-      {/* VAULT GALLERY MODAL */}
+      {/* VAULT GALLERY MODAL - MODIF DI SINI AGAR GAMBAR NFT JADI ART PERFUME */}
       {viewVault && (
         <div className="roxor-modal-overlay" style={{zIndex: 11000}}>
           <div className="card" style={{ maxWidth: '600px', width: '95%', border: '4px solid #000' }}>
             <h3 style={{fontWeight: '900'}}>DIGITAL VAULT</h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '15px' }}>
               {userNfts.map(nft => (
-                <div key={nft.id} style={{ background: '#000', borderRadius: '12px', overflow: 'hidden', border: '2px solid #000', color: '#fff' }}>
-                  <img src={nft.img} style={{ width: '100%' }} alt="NFT" />
-                  <div style={{ padding: '10px', fontSize: '0.7rem' }}><b>{nft.name}</b><br/>{nft.serial}</div>
+                <div key={nft.id} style={{ background: '#000', borderRadius: '12px', overflow: 'hidden', border: '2px solid #000', color: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  {/* Container Art Perfume */}
+                  <div style={{ padding: '30px', background: '#111', width: '100%', display: 'flex', justifyContent: 'center' }}>
+                    {Icons.ArtPerfume}
+                  </div>
+                  <div style={{ padding: '10px', fontSize: '0.75rem', textAlign: 'center' }}>
+                    <b style={{letterSpacing: '1px'}}>{nft.name}</b><br/>
+                    <span style={{opacity: 0.7}}>{nft.serial}</span>
+                  </div>
                 </div>
               ))}
             </div>
