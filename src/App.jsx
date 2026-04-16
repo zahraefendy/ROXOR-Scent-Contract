@@ -45,7 +45,7 @@ function App() {
   const [ledger, setLedger] = useState([]);
   const [viewLedger, setViewLedger] = useState(false);
   const [viewVault, setViewVault] = useState(false);
-  const [viewCouncil, setViewCouncil] = useState(false); // State baru untuk Council
+  const [viewCouncil, setViewCouncil] = useState(false); 
   const [userNfts, setUserNfts] = useState([]);
 
   const [showAI, setShowAI] = useState(false);
@@ -132,19 +132,29 @@ function App() {
     setIsMenuOpen(true);
   };
 
-  const menuItemStyle = { background: 'none', border: 'none', textAlign: 'left', fontSize: '1.1rem', fontWeight: '900', color: '#000', cursor: 'pointer', padding: '15px 10px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '15px', borderBottom: '1px solid #f0f0f0', width: '100%' };
+  const menuItemStyle = { background: 'none', border: 'none', textAlign: 'left', fontSize: '1.1rem', fontWeight: '900', color: '#000', cursor: 'pointer', padding: '15px 10px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '15px', borderBottom: '1px solid #f0f0f0', width: '100%', position: 'relative', zIndex: 2 };
 
   return (
     <div className="App">
-      {/* SIDEBAR MODAL */}
+      {/* SIDEBAR MODAL MODIFIED */}
       {isMenuOpen && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(12px)', zIndex: 10000 }} onClick={() => setIsMenuOpen(false)}>
-          <div style={{ width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000', padding: '40px 20px', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px' }}>
+          <div style={{ width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000', padding: '40px 20px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+            
+            {/* BACKGROUND ART ELEMENT */}
+            <div style={{ position: 'absolute', bottom: '80px', left: '0', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: '0.07', pointerEvents: 'none', userSelect: 'none', zIndex: 1 }}>
+              <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="1.2">
+                <path d="M7 10h10v10H7zM10 5h4v5h-4zM9 10l1-2h4l1 2M12 13v4M10 15h4" />
+              </svg>
+              <h1 style={{ fontSize: '80px', fontWeight: '950', margin: '-10px 0 0 0', letterSpacing: '-5px' }}>ROXOR</h1>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px', position: 'relative', zIndex: 2 }}>
               <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'bold' }}>R</div>
               <h2 style={{ color: '#000', margin: 0, fontSize: '1.5rem', letterSpacing: '2px' }}>ROXOR HUB</h2>
             </div>
-            <nav style={{ display: 'flex', flexDirection: 'column' }}>
+            
+            <nav style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
               <button style={menuItemStyle} onClick={() => {setIsMenuOpen(false); setViewLedger(false); setViewVault(false);}}>{Icons.Sanctuary} Sanctuary</button>
               <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>{Icons.Ledger} My Ledger</button>
               <button style={menuItemStyle} onClick={() => { if(!walletAddress) return alert("Connect Wallet!"); setViewVault(true); setIsMenuOpen(false); }}>{Icons.Vault} Digital Vault</button>
@@ -152,18 +162,17 @@ function App() {
               <button style={menuItemStyle} onClick={() => window.open('https://rialobs.vercel.app/', '_blank')}>{Icons.SharkTank} Shark Tank Rialo</button>
               <button style={menuItemStyle} onClick={() => window.open('https://x.com/roxorcavalier', '_blank')}>{Icons.Community} Community</button>
             </nav>
-            <button onClick={() => setIsMenuOpen(false)} style={{ marginTop: 'auto', background: '#000', color: '#fff', border: 'none', padding: '15px', borderRadius: '10px', fontWeight: 'bold' }}>CLOSE</button>
+            <button onClick={() => setIsMenuOpen(false)} style={{ marginTop: 'auto', background: '#000', color: '#fff', border: 'none', padding: '15px', borderRadius: '10px', fontWeight: 'bold', position: 'relative', zIndex: 2 }}>CLOSE</button>
           </div>
         </div>
       )}
 
-      {/* MODAL SCENT COUNCIL - INTERNATIONAL LUXURY EDITION */}
+      {/* MODAL SCENT COUNCIL */}
       {viewCouncil && (
         <div className="roxor-modal-overlay" style={{zIndex: 11000}}>
           <div className="card" style={{ maxWidth: '450px', width: '95%', border: '4px solid #000', maxHeight: '85vh', overflowY: 'auto', padding: '40px 25px' }}>
             <h3 style={{fontWeight: '900', letterSpacing: '3px', marginBottom: '40px', borderBottom: '2px solid #000', paddingBottom: '10px'}}>SCENT COUNCIL</h3>
             <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '35px' }}>
-              {/* VALIANT */}
               <div>
                 <h2 style={{margin: '0', fontSize: '2.2rem', fontWeight: '950', color: '#000', letterSpacing: '-1px'}}>VALIANT</h2>
                 <p style={{fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', margin: '5px 0 15px 0', fontWeight: '700', color: '#666'}}>The Noble Freshness</p>
@@ -172,7 +181,6 @@ function App() {
                   <br/><strong>Vibe:</strong> Sophisticated, Sharp, & Commanding.
                 </p>
               </div>
-              {/* OPIUM */}
               <div>
                 <h2 style={{margin: '0', fontSize: '2.2rem', fontWeight: '950', color: '#000', letterSpacing: '-1px'}}>OPIUM</h2>
                 <p style={{fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', margin: '5px 0 15px 0', fontWeight: '700', color: '#666'}}>The Dark Addiction</p>
@@ -181,7 +189,6 @@ function App() {
                   <br/><strong>Vibe:</strong> Enigmatic, Deep, & Seductive.
                 </p>
               </div>
-              {/* VIGOR */}
               <div>
                 <h2 style={{margin: '0', fontSize: '2.2rem', fontWeight: '950', color: '#000', letterSpacing: '-1px'}}>VIGOR</h2>
                 <p style={{fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px', margin: '5px 0 15px 0', fontWeight: '700', color: '#666'}}>The Raw Energy</p>
