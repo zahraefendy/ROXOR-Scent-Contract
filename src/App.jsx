@@ -136,24 +136,42 @@ function App() {
 
   return (
     <div className="App">
-      {/* SIDEBAR MODAL MODIFIED */}
+      {/* SIDEBAR MODAL - MODIFIED WITH ART OVERLAY */}
       {isMenuOpen && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255, 255, 255, 0.7)', backdropFilter: 'blur(12px)', zIndex: 10000 }} onClick={() => setIsMenuOpen(false)}>
-          <div style={{ width: '300px', height: '100%', background: '#fff', borderRight: '3px solid #000', padding: '40px 20px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }} onClick={(e) => e.stopPropagation()}>
+        <div 
+          style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(15px)', zIndex: 10000, display: 'flex' }} 
+          onClick={() => setIsMenuOpen(false)}
+        >
+          {/* ART RAKSASA DI AREA KOSONG (KANAN) */}
+          <div style={{ position: 'absolute', right: '15%', top: '50%', transform: 'translateY(-50%)', opacity: '0.04', pointerEvents: 'none', userSelect: 'none', textAlign: 'right' }}>
+            <svg width="550" height="550" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="0.5">
+               <path d="M7 10h10v10H7zM10 5h4v5h-4zM9 10l1-2h4l1 2M12 13v4M10 15h4" />
+            </svg>
+            <h1 style={{ fontSize: '160px', fontWeight: '950', margin: '-60px 0 0 0', letterSpacing: '-12px', lineHeight: '1' }}>ROXOR</h1>
+            <p style={{ fontSize: '14px', letterSpacing: '1.5em', fontWeight: '600', textTransform: 'uppercase', marginTop: '10px' }}>Extrait De Parfum</p>
+          </div>
+
+          <div 
+            style={{ width: '310px', height: '100%', background: '#fff', borderRight: '4px solid #000', padding: '40px 20px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '30px 0 60px rgba(0,0,0,0.05)' }} 
+            onClick={(e) => e.stopPropagation()}
+          >
             
-            {/* BACKGROUND ART ELEMENT */}
-            <div style={{ position: 'absolute', bottom: '80px', left: '0', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: '0.07', pointerEvents: 'none', userSelect: 'none', zIndex: 1 }}>
-              <svg width="160" height="160" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="1.2">
+            {/* BACKGROUND ART DI DALAM SIDEBAR (TENGAH) */}
+            <div style={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', opacity: '0.08', pointerEvents: 'none', userSelect: 'none', zIndex: 1, width: '100%' }}>
+              <svg width="180" height="180" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="1.2">
                 <path d="M7 10h10v10H7zM10 5h4v5h-4zM9 10l1-2h4l1 2M12 13v4M10 15h4" />
               </svg>
-              <h1 style={{ fontSize: '80px', fontWeight: '950', margin: '-10px 0 0 0', letterSpacing: '-5px' }}>ROXOR</h1>
+              <h1 style={{ fontSize: '85px', fontWeight: '950', margin: '-10px 0 0 0', letterSpacing: '-6px' }}>ROXOR</h1>
+              <p style={{ fontSize: '9px', fontWeight: '700', letterSpacing: '1em', textTransform: 'uppercase', marginTop: '5px' }}>Extrait De Parfum</p>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '30px', position: 'relative', zIndex: 2 }}>
+            {/* HEADER HUB */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '35px', position: 'relative', zIndex: 2 }}>
               <div style={{ width: '40px', height: '40px', background: '#000', borderRadius: '50%', display:'flex', alignItems:'center', justifyContent:'center', color:'#fff', fontWeight:'bold' }}>R</div>
-              <h2 style={{ color: '#000', margin: 0, fontSize: '1.5rem', letterSpacing: '2px' }}>ROXOR HUB</h2>
+              <h2 style={{ color: '#000', margin: 0, fontSize: '1.5rem', letterSpacing: '2px', fontWeight: '900' }}>ROXOR HUB</h2>
             </div>
             
+            {/* NAVIGASI */}
             <nav style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
               <button style={menuItemStyle} onClick={() => {setIsMenuOpen(false); setViewLedger(false); setViewVault(false);}}>{Icons.Sanctuary} Sanctuary</button>
               <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>{Icons.Ledger} My Ledger</button>
@@ -162,7 +180,8 @@ function App() {
               <button style={menuItemStyle} onClick={() => window.open('https://rialobs.vercel.app/', '_blank')}>{Icons.SharkTank} Shark Tank Rialo</button>
               <button style={menuItemStyle} onClick={() => window.open('https://x.com/roxorcavalier', '_blank')}>{Icons.Community} Community</button>
             </nav>
-            <button onClick={() => setIsMenuOpen(false)} style={{ marginTop: 'auto', background: '#000', color: '#fff', border: 'none', padding: '15px', borderRadius: '10px', fontWeight: 'bold', position: 'relative', zIndex: 2 }}>CLOSE</button>
+
+            <button onClick={() => setIsMenuOpen(false)} style={{ marginTop: 'auto', background: '#000', color: '#fff', border: 'none', padding: '16px', borderRadius: '12px', fontWeight: '900', cursor: 'pointer', position: 'relative', zIndex: 2, letterSpacing: '2px' }}>CLOSE</button>
           </div>
         </div>
       )}
@@ -249,7 +268,7 @@ function App() {
 
       {walletAddress ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px', marginBottom: '40px' }}>
-          <button onClick={() => setIsMenuOpen(true)} style={{ background: '#fff', border: '3px solid #000', borderRadius: '10px', padding: '8px 15px', fontSize: '22px', boxShadow: '4px 4px 0px #000' }}>☰</button>
+          <button onClick={() => setIsMenuOpen(true)} style={{ background: '#fff', border: '3px solid #000', borderRadius: '10px', padding: '8px 15px', fontSize: '22px', boxShadow: '4px 4px 0px #000', cursor: 'pointer' }}>☰</button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#fff', padding: '10px 20px', borderRadius: '40px', border: '3px solid #000', boxShadow: '4px 4px 0px #000' }}>
             <img src={avatar} alt="Avatar" style={{ width: '24px', height: '24px', borderRadius: '50%', border: '2px solid #000' }} />
             <span style={{ fontSize: '0.9rem', fontWeight: '900' }}>{walletAddress.substring(0, 6)}...{walletAddress.slice(-4)}</span>
