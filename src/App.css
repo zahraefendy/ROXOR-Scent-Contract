@@ -1,4 +1,4 @@
-/* App.css - ROXOR ULTIMATE FIX (ANTI GEPENG) */
+/* App.css - ROXOR FINAL LUXURY FIX */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
 :root {
@@ -10,79 +10,77 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* 1. DASAR HTML & BODY */
 html, body {
-  margin: 0;
-  padding: 0;
   width: 100%;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
   background-color: var(--roxor-white);
-  color: var(--roxor-black);
 }
 
-/* 2. MODE LANDING (SEBELUM KONEK) */
-.roxor-landing-container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: var(--roxor-white);
-  gap: 20px;
-}
-
-.landing-logo { height: 100px; width: auto; }
-
-.connect-btn-landing {
-  padding: 16px 45px;
-  background: var(--roxor-black);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  font-weight: 900;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  cursor: pointer;
-}
-
-/* 3. MODE DASHBOARD (SETELAH KONEK) - FIX GEPENG */
+/* FIX BACKGROUND FULLSCREEN */
 .roxor-app-connected {
-  width: 100%; /* Pastiin lebar 100% biar gak gepeng */
+  width: 100vw;
   min-height: 100vh;
   background-image: url('/background-roxor.jpg'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  display: block; /* Hindari flex di level terluar biar gak kegencet */
+  display: block; /* Penting: biar gak kegencet flex induk */
+  position: relative;
 }
 
+/* HEADER FIX (POSISI AVATAR DI KANAN) */
 .roxor-luxury-header {
   height: var(--header-h);
-  background: var(--roxor-white);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid #eee;
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 1000;
+  z-index: 2000;
   display: flex;
   align-items: center;
-  padding: 0 40px;
+  padding: 0 5%;
 }
 
+.header-inner {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* FIX AVATAR POSISI & UKURAN */
+.header-profile-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8f8f8;
+  padding: 5px 15px;
+  border-radius: 50px;
+  border: 1px solid #eee;
+}
+
+.header-profile-pill img {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* KONTEN TENGAH */
 .roxor-main-stage {
-  padding-top: var(--header-h); /* Kasih space buat header */
+  padding-top: calc(var(--header-h) + 40px);
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-}
-
-.roxor-dashboard { 
-  width: 100%;
-  max-width: 1200px; /* Jaga konten tetap di tengah tapi container tetap lebar */
-  padding: 40px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,53 +88,27 @@ html, body {
 
 .roxor-grid {
   display: flex;
+  gap: 25px;
   justify-content: center;
-  gap: 30px;
   flex-wrap: wrap;
-  width: 100%;
+  width: 90%;
+  max-width: 1200px;
 }
 
-/* 4. CARD GLASSMORPHISM */
 .roxor-glass-card {
-  background: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  padding: 2rem;
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 30px;
   border-radius: 20px;
-  flex: 1; /* Biar card bagi rata ruang */
-  min-width: 320px;
-  max-width: 450px;
+  flex: 1;
+  min-width: 300px;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-.luxury-input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-family: inherit;
-}
-
-.luxury-btn {
-  width: 100%;
-  padding: 12px;
-  background: #000;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-/* 3D Visual */
+/* 3D Visual Fix */
 .roxor-3d-visual {
   width: 100%;
   height: 500px;
-  margin-top: 30px;
+  margin-top: 20px;
 }
-
-.fade-in { animation: fadeIn 0.5s ease-in; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
