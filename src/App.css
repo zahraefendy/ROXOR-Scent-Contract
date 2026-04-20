@@ -1,4 +1,4 @@
-/* App.css - ROXOR BLOCKCHAIN LUXURY EDITION */
+/* App.css - ROXOR BLOCKCHAIN LUXURY EDITION (FIXED BACKGROUND) */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
 :root {
@@ -6,7 +6,7 @@
   --roxor-white: #ffffff;
   --roxor-black: #000000;
   --roxor-gold: #D4AF37;
-  --header-h: 80px; /* Tinggi list putih atas */
+  --header-h: 80px; 
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,14 +18,13 @@ body {
   overflow-x: hidden;
 }
 
-/* CONTAINER UTAMA */
 .roxor-app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* 1. HEADER PUTIH PERMANEN (List Atas) */
+/* 1. HEADER PUTIH PERMANEN */
 .roxor-luxury-header {
   height: var(--header-h);
   background: var(--roxor-white);
@@ -79,28 +78,41 @@ body {
   font-size: 24px; background: none; border: none; cursor: pointer;
 }
 
-/* 2. AREA UTAMA DENGAN BACKGROUND MARMER */
+/* 2. AREA UTAMA - FIX BACKGROUND FULL SCREEN */
 .roxor-main-stage {
   flex: 1;
   margin-top: var(--header-h);
-  background-image: url('/background-roxor.jpg'); /* Pastikan file ada di folder public */
+  background-image: url('/background-roxor.jpg'); 
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Biar marmernya nggak ikut kegulung */
+  
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: center; /* Konten di tengah secara vertikal */
   align-items: center;
-  padding: 40px 20px;
+  padding: 60px 20px;
   position: relative;
+  min-height: calc(100vh - var(--header-h)); /* MAKSA tinggi minimal seukuran layar */
+  width: 100%;
 }
 
-.roxor-dashboard { width: 100%; max-width: 1000px; z-index: 5; }
+.roxor-dashboard { 
+  width: 100%; 
+  max-width: 1000px; 
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .roxor-grid {
   display: flex;
   justify-content: center;
   gap: 30px;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 /* LUXURY GLASS CARDS */
@@ -137,11 +149,12 @@ body {
 .roxor-3d-visual {
   height: 400px;
   width: 100%;
+  max-width: 600px;
   margin-top: 40px;
   pointer-events: none;
 }
 
-/* SIDEBAR (Fitur Menu Lama) */
+/* SIDEBAR & MODALS (Tetap Sama) */
 .roxor-sidebar-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px); z-index: 2000;
@@ -159,7 +172,6 @@ body {
   border-radius: 10px; font-weight: 900; cursor: pointer; border: none;
 }
 
-/* MODALS (Vault, Success, Ledger) */
 .roxor-modal-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
@@ -198,7 +210,6 @@ body {
 .fade-in { animation: fadeIn 0.8s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-/* BUTTON ASLI TETAP ADA UNTUK BACKWARD COMPATIBILITY */
 .roxor-btn {
   padding: 15px; background: #000; color: #fff; font-weight: 900; border: none;
   border-radius: 10px; cursor: pointer; letter-spacing: 2px;
