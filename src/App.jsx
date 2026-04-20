@@ -90,24 +90,63 @@ function App() {
     }, 1200);
   }
 
+  // --- MODIFIKASI FUNGSI MINTING (STABILIZED) ---
   async function mintSertifikat() {
-    if (!walletAddress || !mintSerial) return;
+    if (!walletAddress || !mintSerial) {
+      alert("Please enter a serial number.");
+      return;
+    }
+    
     setIsMinting(true);
     try {
+      if (!window.ethereum) throw new Error("MetaMask not found");
+
+      // Gunakan BrowserProvider (Ethers v6)
       const provider = new ethers.BrowserProvider(window.ethereum);
+      
+      // Minta Signer yang valid
       const signer = await provider.getSigner();
+      
+      // Hubungkan ke Kontrak NFT
       const nftContract = new ethers.Contract(nftAddress, abiNFT, signer);
-      const tx = await nftContract.mintCertificate(walletAddress, `https://roxor.id/cert/${mintSerial}`);
+      
+      // Eksekusi Minting dengan Metadata URL
+      // Sesuaikan nama fungsi di contract lu (mintCertificate)
+      const tx = await nftContract.mintCertificate(
+        walletAddress, 
+        `https://roxor.id/cert/${mintSerial}`
+      );
+      
+      console.log("Transaction Hash:", tx.hash);
+      
+      // Tunggu sampai transaksi sukses di blockchain
       await tx.wait();
       
-      const newNft = { id: Date.now(), name: "VALIANT", serial: mintSerial, image: "/vlt-nft.jpg" };
+      // Update Vault di Local Storage & State
+      const newNft = { 
+        id: Date.now(), 
+        name: "VALIANT", 
+        serial: mintSerial, 
+        image: "/vlt-nft.jpg" 
+      };
+      
       const updatedNfts = [newNft, ...userNfts];
       setUserNfts(updatedNfts);
       localStorage.setItem('roxor_nfts', JSON.stringify(updatedNfts));
       
       setShowSuccess(true);
       setMintSerial("");
-    } catch (err) { console.error(err); alert("Transaction failed."); } finally { setIsMinting(false); }
+      
+    } catch (err) { 
+      console.error("Detailed Mint Error:", err);
+      if (err.code === 4001) {
+        alert("Transaction rejected by user.");
+      } else {
+        alert("Blockchain transaction failed. Please check your gas fees.");
+      }
+    } finally { 
+      setIsMinting(false); 
+    }
   }
 
   const handleNdoAI = async () => {
