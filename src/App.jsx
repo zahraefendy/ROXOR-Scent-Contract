@@ -116,124 +116,130 @@ function App() {
   const menuItemStyle = { background: 'none', border: 'none', textAlign: 'left', fontSize: '1.1rem', fontWeight: '900', color: '#000', cursor: 'pointer', padding: '15px 10px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '15px', borderBottom: '1px solid #f0f0f0', width: '100%', position: 'relative', zIndex: 2 };
 
   return (
-    <div className="roxor-app-container">
-      
-      {/* 1. HEADER PUTIH PERMANEN (LOGO, NOTIF, BAHASA) */}
-      <header className="roxor-luxury-header">
-        <div className="header-inner">
-          <div className="header-left">
-            <img src="/logo-roxor.png" alt="ROXOR" className="header-logo-img" />
-          </div>
+    <>
+      {/* 1. TAMPILAN SEBELUM KONEK WALLET (LANDING PAGE) */}
+      {!walletAddress ? (
+        <div className="roxor-landing-container fade-in">
+          <img src="/logo-roxor.png" alt="ROXOR" className="landing-logo" />
+          <p className="landing-text">Luxury Blockchain Fragrance</p>
+          <button className="connect-btn-landing" onClick={connectWallet}>
+            CONNECT SECURE WALLET
+          </button>
+        </div>
+      ) : (
+        /* 2. TAMPILAN SETELAH KONEK WALLET (DASHBOARD MARMER) */
+        <div className="roxor-app-connected fade-in">
           
-          <div className="header-right">
-            <div className="lang-selector">ENGLISH ▾</div>
-            <button className="header-icon-btn">{Icons.Bell}<span className="notif-badge"></span></button>
-            {walletAddress && (
-              <div className="header-profile-pill">
-                <img src={avatar} alt="Avatar" />
-                <span>{walletAddress.substring(0, 6)}...</span>
+          <header className="roxor-luxury-header">
+            <div className="header-inner">
+              <div className="header-left">
+                <img src="/logo-roxor.png" alt="ROXOR" className="header-logo-img" />
+              </div>
+              
+              <div className="header-right">
+                <div className="lang-selector">ENGLISH ▾</div>
+                <button className="header-icon-btn">{Icons.Bell}<span className="notif-badge"></span></button>
+                <div className="header-profile-pill">
+                  <img src={avatar} alt="Avatar" />
+                  <span>{walletAddress.substring(0, 6)}...</span>
+                </div>
+                <button className="menu-toggle-btn" onClick={() => setIsMenuOpen(true)}>☰</button>
+              </div>
+            </div>
+          </header>
+
+          <main className="roxor-main-stage">
+            <div className="roxor-dashboard">
+              <div className="roxor-grid">
+                {/* Card Verifier */}
+                <div className="roxor-glass-card">
+                  <h3>PRODUCT VERIFIER</h3>
+                  <input type="text" id="serialInput" placeholder="RXR-VLT-001" className="luxury-input" />
+                  <button className="luxury-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>VERIFY AUTHENTICITY</button>
+                  {verifStatus && <p className="status-msg">{verifStatus}</p>}
+                </div>
+
+                {/* Card Minting */}
+                <div className="roxor-glass-card">
+                  <h3>DIGITAL CERTIFICATE</h3>
+                  <input type="text" placeholder="ENTER SERIAL" className="luxury-input" value={mintSerial} onChange={(e) => setMintSerial(e.target.value.toUpperCase())} />
+                  <button className="luxury-btn" onClick={mintSertifikat} disabled={isMinting}>
+                    {isMinting ? "MINTING..." : "MINT NFT"}
+                  </button>
+                </div>
+              </div>
+
+              {/* 3D Visual Center */}
+              <div className="roxor-3d-visual">
+                 <Suspense fallback={null}><Valiant3D /></Suspense>
+              </div>
+            </div>
+          </main>
+
+          {/* SIDEBAR */}
+          {isMenuOpen && (
+            <div className="roxor-sidebar-overlay" onClick={() => setIsMenuOpen(false)}>
+              <div className="roxor-sidebar" onClick={(e) => e.stopPropagation()}>
+                <div className="sidebar-logo-box"><img src="/logo-roxor.png" alt="ROXOR" /></div>
+                <nav>
+                  <button style={menuItemStyle} onClick={() => {setIsMenuOpen(false); setViewLedger(false); setViewVault(false);}}>{Icons.Sanctuary} Sanctuary</button>
+                  <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>{Icons.Ledger} My Ledger</button>
+                  <button style={menuItemStyle} onClick={() => { setViewVault(true); setIsMenuOpen(false); }}>{Icons.Vault} Digital Vault</button>
+                  <button style={menuItemStyle} onClick={() => {setViewCouncil(true); setIsMenuOpen(false);}}>{Icons.Council} Scent Council</button>
+                  <button style={menuItemStyle} onClick={() => window.open('https://rialobs.vercel.app/', '_blank')}>{Icons.SharkTank} Shark Tank Rialo</button>
+                </nav>
+                <button onClick={() => setIsMenuOpen(false)} className="sidebar-close-btn">CLOSE</button>
+              </div>
+            </div>
+          )}
+
+          {/* MODAL VAULT */}
+          {viewVault && (
+            <div className="roxor-modal-overlay">
+              <div className="card">
+                <h3>DIGITAL VAULT</h3>
+                <div className="vault-grid">
+                  {userNfts.map(nft => (
+                    <div key={nft.id} className="vault-item">
+                      <img src={nft.image} alt={nft.name} style={{width: '100%', borderRadius: '10px'}} />
+                      <p><b>{nft.name}</b><br/>{nft.serial}</p>
+                    </div>
+                  ))}
+                </div>
+                <button className="roxor-btn" onClick={closeAndReturn}>CLOSE</button>
+              </div>
+            </div>
+          )}
+
+          {/* NDOAI FLOATING */}
+          <div className="ndoai-fixed-wrap">
+            {showAI && (
+              <div className="ai-chat-window">
+                <div className="ai-header">NdoAI Assistant</div>
+                <div className="ai-content"><p><strong>NdoAI:</strong> {isAiLoading ? "..." : aiResponse}</p></div>
+                <div className="ai-footer">
+                  <input value={aiInput} onChange={(e) => setAiInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleNdoAI()} placeholder="Ask NdoAI..." />
+                </div>
               </div>
             )}
-            <button className="menu-toggle-btn" onClick={() => setIsMenuOpen(true)}>☰</button>
+            <button className="ai-toggle-fab" onClick={() => setShowAI(!showAI)}>
+              {showAI ? "✕" : <>{Icons.Sparkles} <span>NDO AI</span></>}
+            </button>
           </div>
-        </div>
-      </header>
 
-      {/* 2. AREA UTAMA DENGAN BACKGROUND MARMER */}
-      <main className="roxor-main-stage">
-        
-        {!walletAddress ? (
-          <div className="auth-zone">
-            <button className="connect-btn-luxury" onClick={connectWallet}>CONNECT SECURE WALLET</button>
-          </div>
-        ) : (
-          <div className="roxor-dashboard fade-in">
-            <div className="roxor-grid">
-              {/* Card Verifier */}
-              <div className="roxor-glass-card">
-                <h3>PRODUCT VERIFIER</h3>
-                <input type="text" id="serialInput" placeholder="RXR-VLT-001" className="luxury-input" />
-                <button className="luxury-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>VERIFY AUTHENTICITY</button>
-                {verifStatus && <p className="status-msg">{verifStatus}</p>}
-              </div>
-
-              {/* Card Minting */}
-              <div className="roxor-glass-card">
-                <h3>DIGITAL CERTIFICATE</h3>
-                <input type="text" placeholder="ENTER SERIAL" className="luxury-input" value={mintSerial} onChange={(e) => setMintSerial(e.target.value.toUpperCase())} />
-                <button className="luxury-btn" onClick={mintSertifikat} disabled={isMinting}>
-                  {isMinting ? "MINTING..." : "MINT NFT"}
-                </button>
+          {/* SUCCESS MODAL */}
+          {showSuccess && (
+            <div className="roxor-modal-overlay">
+              <div className="card">
+                <h2>MINT SUCCESSFUL!</h2>
+                <img src={mintedImage} alt="NFT" style={{width: '100%', borderRadius: '15px', margin: '20px 0'}} />
+                <button className="roxor-btn" onClick={() => setShowSuccess(false)}>DONE</button>
               </div>
             </div>
-
-            {/* 3D Visual Center */}
-            <div className="roxor-3d-visual">
-               <Suspense fallback={null}><Valiant3D /></Suspense>
-            </div>
-          </div>
-        )}
-      </main>
-
-      {/* MODAL & SIDEBAR (Tetap Pakai Fitur Lama) */}
-      {isMenuOpen && (
-        <div className="roxor-sidebar-overlay" onClick={() => setIsMenuOpen(false)}>
-          <div className="roxor-sidebar" onClick={(e) => e.stopPropagation()}>
-            <div className="sidebar-logo-box"><img src="/logo-roxor.png" alt="ROXOR" /></div>
-            <nav>
-              <button style={menuItemStyle} onClick={() => {setIsMenuOpen(false); setViewLedger(false); setViewVault(false);}}>{Icons.Sanctuary} Sanctuary</button>
-              <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>{Icons.Ledger} My Ledger</button>
-              <button style={menuItemStyle} onClick={() => { if(!walletAddress) return alert("Connect Wallet!"); setViewVault(true); setIsMenuOpen(false); }}>{Icons.Vault} Digital Vault</button>
-              <button style={menuItemStyle} onClick={() => {setViewCouncil(true); setIsMenuOpen(false);}}>{Icons.Council} Scent Council</button>
-              <button style={menuItemStyle} onClick={() => window.open('https://rialobs.vercel.app/', '_blank')}>{Icons.SharkTank} Shark Tank Rialo</button>
-            </nav>
-            <button onClick={() => setIsMenuOpen(false)} className="sidebar-close-btn">CLOSE</button>
-          </div>
+          )}
         </div>
       )}
-
-      {/* Popups (Vault, Council, Ledger, Success) - Tetap berfungsi sama */}
-      {viewVault && (
-        <div className="roxor-modal-overlay">
-          <div className="card">
-            <h3>DIGITAL VAULT</h3>
-            <div className="vault-grid">
-              {userNfts.map(nft => (
-                <div key={nft.id} className="vault-item">
-                  <img src={nft.image} alt={nft.name} />
-                  <p><b>{nft.name}</b><br/>{nft.serial}</p>
-                </div>
-              ))}
-            </div>
-            <button className="roxor-btn" onClick={closeAndReturn}>CLOSE</button>
-          </div>
-        </div>
-      )}
-
-      {/* NdoAI Assistant (Floating) */}
-      <div className="ndoai-fixed-wrap">
-        {showAI && (
-          <div className="ai-chat-window">
-            <div className="ai-header">NdoAI Assistant</div>
-            <div className="ai-content"><p><strong>NdoAI:</strong> {isAiLoading ? "..." : aiResponse}</p></div>
-            <div className="ai-footer"><input value={aiInput} onChange={(e) => setAiInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleNdoAI()} placeholder="Ask NdoAI..." /></div>
-          </div>
-        )}
-        <button className="ai-toggle-fab" onClick={() => setShowAI(!showAI)}>
-          {showAI ? "✕" : <>{Icons.Sparkles} <span>NDO AI</span></>}
-        </button>
-      </div>
-
-      {showSuccess && (
-        <div className="roxor-modal-overlay success-modal">
-          <div className="card">
-            <h2>MINT SUCCESSFUL!</h2>
-            <img src={mintedImage} alt="NFT" style={{width: '100%', borderRadius: '15px'}} />
-            <button className="roxor-btn" onClick={() => setShowSuccess(false)}>DONE</button>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   );
 }
 
