@@ -138,9 +138,9 @@ function App() {
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255, 255, 255, 0.6)', backdropFilter: 'blur(15px)', zIndex: 10000, display: 'flex' }} onClick={() => setIsMenuOpen(false)}>
           <div style={{ width: '310px', height: '100%', background: '#fff', borderRight: '4px solid #000', padding: '40px 20px', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden', boxShadow: '30px 0 60px rgba(0,0,0,0.05)' }} onClick={(e) => e.stopPropagation()}>
             
-            {/* LOGO DI DALAM SIDEBAR */}
-            <div style={{ marginBottom: '35px', position: 'relative', zIndex: 2 }}>
-              <img src="/logo-roxor.png" alt="Roxor Hub" style={{ height: '45px', width: 'auto', objectFit: 'contain' }} />
+            {/* LOGO DI DALAM SIDEBAR (DIBESARKAN JADI 65PX) */}
+            <div style={{ marginBottom: '40px', paddingLeft: '5px', position: 'relative', zIndex: 2 }}>
+              <img src="/logo-roxor.png" alt="Roxor Hub" style={{ height: '65px', width: 'auto', objectFit: 'contain' }} />
             </div>
 
             <nav style={{ display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
