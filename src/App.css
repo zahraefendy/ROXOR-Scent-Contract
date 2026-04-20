@@ -1,4 +1,4 @@
-/* App.css - ROXOR LUXURY EDITION (LANDING + DASHBOARD) */
+/* App.css - ROXOR ULTIMATE FIX (ANTI GEPENG) */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
 :root {
@@ -10,23 +10,20 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* BASE SETUP */
+/* 1. DASAR HTML & BODY */
 html, body {
-  min-height: 100vh;
+  margin: 0;
+  padding: 0;
   width: 100%;
+  min-height: 100vh;
   background-color: var(--roxor-white);
   color: var(--roxor-black);
 }
 
-body { overflow-x: hidden; }
-
-/* =========================================
-   1. LANDING PAGE (SEBELUM KONEK WALLET)
-   Gaya Putih Polos Minimalis
-   ========================================= */
+/* 2. MODE LANDING (SEBELUM KONEK) */
 .roxor-landing-container {
+  width: 100vw;
   height: 100vh;
-  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -35,20 +32,7 @@ body { overflow-x: hidden; }
   gap: 20px;
 }
 
-.landing-logo {
-  height: 100px; /* Ukuran Logo Roxor lu */
-  width: auto;
-  margin-bottom: 10px;
-}
-
-.landing-text {
-  font-weight: 700;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  margin-bottom: 20px;
-  color: #888;
-}
+.landing-logo { height: 100px; width: auto; }
 
 .connect-btn-landing {
   padding: 16px 45px;
@@ -60,27 +44,18 @@ body { overflow-x: hidden; }
   letter-spacing: 3px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.connect-btn-landing:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-}
-
-/* =========================================
-   2. DASHBOARD (SETELAH KONEK WALLET)
-   Di sini Marmer Lu Muncul Lagi!
-   ========================================= */
+/* 3. MODE DASHBOARD (SETELAH KONEK) - FIX GEPENG */
 .roxor-app-connected {
-  /* KODE BEGROND LU YANG UDAH BAGUS TADI */
+  width: 100%; /* Pastiin lebar 100% biar gak gepeng */
+  min-height: 100vh;
   background-image: url('/background-roxor.jpg'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  min-height: 100vh;
-  width: 100%;
+  display: block; /* Hindari flex di level terluar biar gak kegencet */
 }
 
 .roxor-luxury-header {
@@ -95,71 +70,73 @@ body { overflow-x: hidden; }
   padding: 0 40px;
 }
 
-.header-inner {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-logo-img { height: 40px; width: auto; }
-
 .roxor-main-stage {
-  margin-top: var(--header-h);
+  padding-top: var(--header-h); /* Kasih space buat header */
   width: 100%;
-  min-height: calc(100vh - var(--header-h));
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 0;
-  background: transparent; /* Biar marmer di bawah kelihatan */
+  min-height: 100vh;
 }
 
-/* 3. CARD & KOMPONEN LAIN (GAK DIUBAH) */
-.roxor-glass-card, .card {
-  background: rgba(255, 255, 255, 0.6) !important;
+.roxor-dashboard { 
+  width: 100%;
+  max-width: 1200px; /* Jaga konten tetap di tengah tapi container tetap lebar */
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.roxor-grid {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* 4. CARD GLASSMORPHISM */
+.roxor-glass-card {
+  background: rgba(255, 255, 255, 0.7) !important;
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 2.5rem;
-  border-radius: 25px;
-  width: 100%;
-  max-width: 420px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 2rem;
+  border-radius: 20px;
+  flex: 1; /* Biar card bagi rata ruang */
+  min-width: 320px;
+  max-width: 450px;
   text-align: center;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-/* NFT VISUAL & SHIMMER (TETAP ADA) */
-.nft-card-visual {
-  width: 220px; height: 300px;
-  background: var(--roxor-black);
-  border-radius: 12px;
-  margin: 20px auto;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+.luxury-input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
 }
 
-.shimmer::after {
-  content: "";
-  position: absolute; top: 0; left: -150%;
-  width: 50%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  animation: shimmer-effect 1.5s infinite;
+.luxury-btn {
+  width: 100%;
+  padding: 12px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-@keyframes shimmer-effect { 100% { left: 150%; } }
-
-/* NDOAI FIXED (TETAP ADA) */
-.ndoai-fixed-wrap { position: fixed; bottom: 25px; left: 25px; z-index: 1000; }
-.ai-toggle-fab { 
-  background: var(--roxor-black); color: #fff; border: none; 
-  padding: 14px 25px; border-radius: 50px; cursor: pointer;
-  font-weight: 700; letter-spacing: 1px;
+/* 3D Visual */
+.roxor-3d-visual {
+  width: 100%;
+  height: 500px;
+  margin-top: 30px;
 }
 
-/* 3D Visual Center */
-.roxor-3d-visual { height: 400px; width: 100%; margin-top: 20px; }
-
-.fade-in { animation: fadeIn 0.8s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.5s ease-in; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
