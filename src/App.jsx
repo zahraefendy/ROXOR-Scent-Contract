@@ -31,6 +31,8 @@ function App() {
   const [viewLedger, setViewLedger] = useState(false);
   const [viewVault, setViewVault] = useState(false);
   const [viewCouncil, setViewCouncil] = useState(false); 
+  const [viewNotif, setViewNotif] = useState(false);
+  const [showDisconnect, setShowDisconnect] = useState(false);
   const [userNfts, setUserNfts] = useState([]);
   const [showAI, setShowAI] = useState(false);
   const [aiInput, setAiInput] = useState("");
@@ -42,10 +44,9 @@ function App() {
   useEffect(() => {
     const savedLedger = localStorage.getItem('roxor_ledger');
     if (savedLedger) setLedger(JSON.parse(savedLedger));
-    if (walletAddress) {
-      setUserNfts([{ id: 1, name: "VALIANT", serial: "RXR-VLT-001", type: "Extrait de Parfum", image: "/vlt-nft.jpg" }]);
-    }
-  }, [walletAddress]);
+    const savedNfts = localStorage.getItem('roxor_nfts');
+    if (savedNfts) setUserNfts(JSON.parse(savedNfts));
+  }, []);
 
   async function connectWallet() {
     if (window.ethereum) {
@@ -57,19 +58,26 @@ function App() {
     } else { alert("Please install MetaMask!"); }
   }
 
+  function disconnectWallet() {
+    setWalletAddress("");
+    setAvatar("");
+    setShowDisconnect(false);
+    setIsMenuOpen(false);
+  }
+
   function checkProduct(serial) {
     if (!serial) return;
     setVerifStatus("🔍 Syncing with Rialo..."); 
     setScentDetail(null);
     const code = serial.toUpperCase();
     setTimeout(() => {
-        if (code.includes("VLT") || code === "RXR-VLT-001") {
+        if (code.includes("RXR-VLT")) {
             setScentDetail({
               name: "VALIANT",
               type: "Extrait de Parfum",
               vibes: "Fresh, Spicy, & Woody",
               batch: "BATCH: RXR-VLT-2026",
-              description: "A powerful and noble composition. Valiant opens with the radiant freshness of Calabrian Bergamot and Pepper."
+              description: "A powerful and noble composition. Valiant opens with the radiant freshness of Calabrian Bergamot and Pepper, followed by a woody trail that commands respect."
             });
             setVerifStatus("✅ AUTHENTIC PRODUCT VERIFIED"); 
             const newEntry = { id: Date.now(), date: new Date().toLocaleString(), item: "Valiant", serial: code, status: "AUTHENTIC" };
@@ -79,7 +87,7 @@ function App() {
         } else {
             setVerifStatus("❌ INVALID CODE!");
         }
-    }, 600);
+    }, 1200);
   }
 
   async function mintSertifikat() {
@@ -91,8 +99,13 @@ function App() {
       const nftContract = new ethers.Contract(nftAddress, abiNFT, signer);
       const tx = await nftContract.mintCertificate(walletAddress, `https://roxor.id/cert/${mintSerial}`);
       await tx.wait();
+      
+      const newNft = { id: Date.now(), name: "VALIANT", serial: mintSerial, image: "/vlt-nft.jpg" };
+      const updatedNfts = [newNft, ...userNfts];
+      setUserNfts(updatedNfts);
+      localStorage.setItem('roxor_nfts', JSON.stringify(updatedNfts));
+      
       setShowSuccess(true);
-      setUserNfts([...userNfts, { id: Date.now(), name: "VALIANT", serial: mintSerial, image: "/vlt-nft.jpg" }]);
       setMintSerial("");
     } catch (err) { console.error(err); alert("Transaction failed."); } finally { setIsMinting(false); }
   }
@@ -110,7 +123,7 @@ function App() {
   };
 
   const closeAndReturn = () => {
-    setViewLedger(false); setViewVault(false); setViewCouncil(false); setIsMenuOpen(false);
+    setViewLedger(false); setViewVault(false); setViewCouncil(false); setViewNotif(false); setIsMenuOpen(false);
   };
 
   return (
@@ -132,24 +145,25 @@ function App() {
                 <img src="/logo-roxor.png" alt="ROXOR" className="header-logo-img" />
               </div>
               
-              {/* AREA KANAN (POJOK ATAS) - REVISED */}
               <div className="header-right">
                 <div className="lang-selector">ENGLISH ▾</div>
                 
-                <button className="header-icon-btn">
+                <button className="header-icon-btn" onClick={() => setViewNotif(true)}>
                   {Icons.Bell}
                   <span className="notif-badge"></span>
                 </button>
                 
-                <div className="header-profile-pill">
+                <div className="header-profile-pill" onClick={() => setShowDisconnect(!showDisconnect)}>
                   <img src={avatar} alt="Avatar" />
                   <span>{walletAddress.substring(0, 6)}...</span>
+                  {showDisconnect && (
+                    <div className="disconnect-popover" onClick={disconnectWallet}>DISCONNECT SESSION</div>
+                  )}
                 </div>
               </div>
             </div>
           </header>
 
-          {/* TOMBOL MENU MELAYANG */}
           <div className="roxor-menu-float" onClick={() => setIsMenuOpen(true)}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -176,6 +190,13 @@ function App() {
                     VERIFY AUTHENTICITY
                   </button>
                   {verifStatus && <p className="status-msg">{verifStatus}</p>}
+                  {scentDetail && (
+                    <div className="scent-info-display fade-in">
+                      <p className="scent-title">{scentDetail.name}</p>
+                      <p className="scent-batch">{scentDetail.batch}</p>
+                      <p className="scent-desc">{scentDetail.description}</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="roxor-glass-card">
@@ -208,7 +229,7 @@ function App() {
             <div className="roxor-sidebar-overlay" onClick={() => setIsMenuOpen(false)}>
               <div className="roxor-sidebar" onClick={(e) => e.stopPropagation()}>
                 <nav style={{marginTop: '20px'}}>
-                  <button className="menu-item-luxury" onClick={() => {setIsMenuOpen(false); setViewLedger(false); setViewVault(false);}}>
+                  <button className="menu-item-luxury" onClick={() => {setIsMenuOpen(false); setViewLedger(false); setViewVault(false); setViewCouncil(false);}}>
                     {Icons.Sanctuary} Sanctuary
                   </button>
                   <button className="menu-item-luxury" onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>
@@ -229,20 +250,88 @@ function App() {
             </div>
           )}
 
-          {/* MODAL VAULT */}
-          {viewVault && (
-            <div className="roxor-modal-overlay">
-              <div className="roxor-glass-card" style={{maxWidth: '500px', width: '90%'}}>
-                <h3>DIGITAL VAULT</h3>
-                <div className="vault-grid" style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', margin: '20px 0'}}>
-                  {userNfts.map(nft => (
-                    <div key={nft.id} className="vault-item">
-                      <img src={nft.image} alt={nft.name} style={{width: '100%', borderRadius: '12px'}} />
-                      <p style={{fontSize: '0.6rem', fontWeight: '900', marginTop: '10px'}}>{nft.serial}</p>
+          {/* MODAL LEDGER */}
+          {viewLedger && (
+            <div className="roxor-modal-overlay" onClick={closeAndReturn}>
+              <div className="roxor-glass-card modal-center" onClick={(e) => e.stopPropagation()}>
+                <h3>MY LEDGER</h3>
+                <div className="ledger-container">
+                  {ledger.length > 0 ? ledger.map(item => (
+                    <div key={item.id} className="ledger-entry">
+                      <span>{item.date}</span>
+                      <span className="ledger-serial">{item.serial}</span>
+                      <span className="ledger-status">AUTHENTIC</span>
                     </div>
-                  ))}
+                  )) : <p className="empty-msg">No verification history found.</p>}
                 </div>
                 <button className="luxury-btn" onClick={closeAndReturn}>CLOSE</button>
+              </div>
+            </div>
+          )}
+
+          {/* MODAL VAULT */}
+          {viewVault && (
+            <div className="roxor-modal-overlay" onClick={closeAndReturn}>
+              <div className="roxor-glass-card modal-center" onClick={(e) => e.stopPropagation()}>
+                <h3>DIGITAL VAULT</h3>
+                <div className="vault-grid">
+                  {userNfts.length > 0 ? userNfts.map(nft => (
+                    <div key={nft.id} className="vault-item-box">
+                      <img src={nft.image} alt={nft.name} />
+                      <p className="vault-serial">{nft.serial}</p>
+                    </div>
+                  )) : <p className="empty-msg">Your vault is currently empty.</p>}
+                </div>
+                <button className="luxury-btn" onClick={closeAndReturn}>CLOSE</button>
+              </div>
+            </div>
+          )}
+
+          {/* MODAL COUNCIL */}
+          {viewCouncil && (
+            <div className="roxor-modal-overlay" onClick={closeAndReturn}>
+              <div className="roxor-glass-card modal-center" onClick={(e) => e.stopPropagation()}>
+                <h3>SCENT COUNCIL</h3>
+                <div className="council-list">
+                  <div className="council-item">
+                    <h4>VALIANT</h4>
+                    <p>A noble blend of Calabrian Bergamot and Pepper. Strong, woodsy, and timeless.</p>
+                  </div>
+                  <div className="council-item">
+                    <h4>OPIUM</h4>
+                    <p>Dark Vanilla intertwined with Black Coffee. Mysterious, addictive, and deep.</p>
+                  </div>
+                  <div className="council-item">
+                    <h4>VIGOR</h4>
+                    <p>Fresh Sea Salt meets earthy Sage. Energetic, bold, and adventurous.</p>
+                  </div>
+                </div>
+                <button className="luxury-btn" onClick={closeAndReturn}>CLOSE</button>
+              </div>
+            </div>
+          )}
+
+          {/* MODAL NOTIF */}
+          {viewNotif && (
+            <div className="roxor-modal-overlay" onClick={closeAndReturn}>
+              <div className="roxor-glass-card modal-center" onClick={(e) => e.stopPropagation()}>
+                <h3>NOTIFICATIONS</h3>
+                <div className="notif-content">
+                  <p className="empty-msg">Roxor news and updates will appear here. Stay tuned for the latest fragrance drops.</p>
+                </div>
+                <button className="luxury-btn" onClick={closeAndReturn}>CLOSE</button>
+              </div>
+            </div>
+          )}
+
+          {/* SUCCESS MODAL */}
+          {showSuccess && (
+            <div className="roxor-modal-overlay">
+              <div className="roxor-glass-card modal-center">
+                <h2>MINT SUCCESSFUL!</h2>
+                <p className="success-subtext">You have successfully minted your NFT Certificate.</p>
+                <img src={mintedImage} alt="NFT" className="success-nft-preview" />
+                <button className="luxury-btn" onClick={() => setShowSuccess(false)}>DONE</button>
               </div>
             </div>
           )}
@@ -262,17 +351,6 @@ function App() {
               {showAI ? "✕" : <>{Icons.Sparkles} <span>NDO AI</span></>}
             </button>
           </div>
-
-          {/* SUCCESS MODAL */}
-          {showSuccess && (
-            <div className="roxor-modal-overlay">
-              <div className="roxor-glass-card" style={{maxWidth: '400px'}}>
-                <h2>MINT SUCCESSFUL!</h2>
-                <img src={mintedImage} alt="NFT" style={{width: '100%', borderRadius: '15px', margin: '20px 0'}} />
-                <button className="luxury-btn" onClick={() => setShowSuccess(false)}>DONE</button>
-              </div>
-            </div>
-          )}
         </div>
       )}
     </>
