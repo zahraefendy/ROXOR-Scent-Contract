@@ -176,12 +176,11 @@ function App() {
             </div>
           </main>
 
-          {/* SIDEBAR */}
+          {/* SIDEBAR - LOGO SUDAH DIHAPUS BIAR GAK NGAMBANG */}
           {isMenuOpen && (
             <div className="roxor-sidebar-overlay" onClick={() => setIsMenuOpen(false)}>
               <div className="roxor-sidebar" onClick={(e) => e.stopPropagation()}>
-                <div className="sidebar-logo-box"><img src="/logo-roxor.png" alt="ROXOR" /></div>
-                <nav>
+                <nav style={{marginTop: '20px'}}>
                   <button style={menuItemStyle} onClick={() => {setIsMenuOpen(false); setViewLedger(false); setViewVault(false);}}>{Icons.Sanctuary} Sanctuary</button>
                   <button style={menuItemStyle} onClick={() => {setViewLedger(true); setIsMenuOpen(false);}}>{Icons.Ledger} My Ledger</button>
                   <button style={menuItemStyle} onClick={() => { setViewVault(true); setIsMenuOpen(false); }}>{Icons.Vault} Digital Vault</button>

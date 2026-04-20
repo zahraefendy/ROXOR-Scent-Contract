@@ -1,4 +1,4 @@
-/* App.css - ROXOR FINAL LUXURY FIX */
+/* App.css - ROXOR FINAL LUXURY REVISION */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
 :root {
@@ -19,7 +19,37 @@ html, body {
   background-color: var(--roxor-white);
 }
 
-/* FIX BACKGROUND FULLSCREEN */
+/* 1. LANDING PAGE (SEBELUM KONEK) */
+.roxor-landing-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--roxor-white);
+  gap: 20px;
+}
+
+.landing-logo {
+  height: 100px;
+  width: auto;
+}
+
+.connect-btn-landing {
+  padding: 16px 45px;
+  background: var(--roxor-black);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+/* 2. DASHBOARD (SETELAH KONEK) */
 .roxor-app-connected {
   width: 100vw;
   min-height: 100vh;
@@ -28,11 +58,11 @@ html, body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  display: block; /* Penting: biar gak kegencet flex induk */
+  display: block;
   position: relative;
 }
 
-/* HEADER FIX (POSISI AVATAR DI KANAN) */
+/* HEADER - LOGO DIPASIN BIAR GAK KEGEDEAN */
 .roxor-luxury-header {
   height: var(--header-h);
   background: rgba(255, 255, 255, 0.95);
@@ -43,7 +73,7 @@ html, body {
   z-index: 2000;
   display: flex;
   align-items: center;
-  padding: 0 5%;
+  padding: 0 40px;
 }
 
 .header-inner {
@@ -53,13 +83,19 @@ html, body {
   align-items: center;
 }
 
+.header-logo-img { 
+  height: 35px; /* UKURAN PAS BIAR RAPI DI LIST PUTIH */
+  width: auto;
+  display: block;
+}
+
 .header-right {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-/* FIX AVATAR POSISI & UKURAN */
+/* AVATAR & PILL */
 .header-profile-pill {
   display: flex;
   align-items: center;
@@ -71,13 +107,13 @@ html, body {
 }
 
 .header-profile-pill img {
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-/* KONTEN TENGAH */
+/* MAIN STAGE */
 .roxor-main-stage {
   padding-top: calc(var(--header-h) + 40px);
   width: 100%;
@@ -106,9 +142,27 @@ html, body {
   text-align: center;
 }
 
-/* 3D Visual Fix */
+/* 3. SIDEBAR - LOGO NGAMBANG DIHAPUS */
+.roxor-sidebar-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5); z-index: 3000;
+}
+
+.roxor-sidebar {
+  position: fixed; top: 0; right: 0; width: 280px; height: 100%;
+  background: white; padding: 30px; z-index: 3001;
+}
+
+.sidebar-logo-box {
+  display: none; /* LOGO DI SIDEBAR DIHAPUS BIAR GAK NGAMBANG */
+}
+
+/* 3D Visual */
 .roxor-3d-visual {
   width: 100%;
   height: 500px;
   margin-top: 20px;
 }
+
+.fade-in { animation: fadeIn 0.5s ease-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
