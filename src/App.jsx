@@ -132,9 +132,15 @@ function App() {
                 <img src="/logo-roxor.png" alt="ROXOR" className="header-logo-img" />
               </div>
               
+              {/* AREA KANAN (POJOK ATAS) - REVISED */}
               <div className="header-right">
                 <div className="lang-selector">ENGLISH ▾</div>
-                <button className="header-icon-btn">{Icons.Bell}<span className="notif-badge"></span></button>
+                
+                <button className="header-icon-btn">
+                  {Icons.Bell}
+                  <span className="notif-badge"></span>
+                </button>
+                
                 <div className="header-profile-pill">
                   <img src={avatar} alt="Avatar" />
                   <span>{walletAddress.substring(0, 6)}...</span>
@@ -143,7 +149,7 @@ function App() {
             </div>
           </header>
 
-          {/* TOMBOL MENU MELAYANG - POSISI DI BAWAH LOGO PADA BACKGROUND */}
+          {/* TOMBOL MENU MELAYANG */}
           <div className="roxor-menu-float" onClick={() => setIsMenuOpen(true)}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -197,7 +203,7 @@ function App() {
             </div>
           </main>
 
-          {/* SIDEBAR - ELEGAN & MINIMALIS */}
+          {/* SIDEBAR */}
           {isMenuOpen && (
             <div className="roxor-sidebar-overlay" onClick={() => setIsMenuOpen(false)}>
               <div className="roxor-sidebar" onClick={(e) => e.stopPropagation()}>
