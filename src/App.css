@@ -1,4 +1,4 @@
-/* App.css - ROXOR BLOCKCHAIN LUXURY EDITION (MARBLE FULL REVISION) */
+/* App.css - ROXOR BLOCKCHAIN LUXURY EDITION (MARBLE FULL REVISION - ANTI BOCOR) */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
 :root {
@@ -11,11 +11,21 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  background-color: var(--roxor-white);
-  color: var(--roxor-black);
+/* FIX UTAMA: Pasang background di HTML & Body biar gak bocor putih */
+html, body {
   min-height: 100vh;
-  overflow-x: hidden; /* Biar gak ada scroll samping */
+  width: 100%;
+  background-image: url('/background-roxor.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Biar marmernya diem pas di-scroll */
+  background-color: var(--roxor-white);
+}
+
+body {
+  color: var(--roxor-black);
+  overflow-x: hidden;
 }
 
 /* 1. HEADER MODIF (Tetap Putih & Mewah) */
@@ -52,19 +62,12 @@ body {
 }
 .header-profile-pill img { width: 20px; border-radius: 50%; }
 
-/* 2. AREA UTAMA - INI YANG KITA PAKSA FULL SCREEN */
+/* 2. AREA UTAMA - DIBIKIN TRANSPARAN BIAR BACKGROUND BODY KELIHATAN */
 .roxor-main-stage {
   margin-top: var(--header-h);
-  width: 100vw;
+  width: 100%;
   min-height: calc(100vh - var(--header-h));
-  
-  /* BACKGROUND MARMER FULL */
-  background-image: url('/background-roxor.jpg'); 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  
+  background: transparent; /* PENTING: Biar marmer di body kelihatan */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,7 +90,7 @@ body {
   flex-wrap: wrap;
 }
 
-/* 3. CARD GLASSMORPHISM (Dari skrip lu tapi dibikin transparan mewah) */
+/* 3. CARD GLASSMORPHISM (Efek Bening Mewah) */
 .roxor-glass-card, .card {
   background: rgba(255, 255, 255, 0.4) !important;
   backdrop-filter: blur(20px);
@@ -101,7 +104,7 @@ body {
   max-width: 400px;
 }
 
-/* 4. FITUR NFT VISUAL (GAK GUA HAPUS) */
+/* 4. FITUR NFT VISUAL (TETAP ADA) */
 .nft-card-visual {
   width: 220px; height: 300px;
   background: var(--roxor-black);
@@ -126,7 +129,7 @@ body {
 
 @keyframes shimmer-effect { 100% { left: 150%; } }
 
-/* 5. INPUT & BUTTONS (Tetap Gaya Roxor) */
+/* 5. INPUT & BUTTONS (Gaya Roxor) */
 .luxury-input, .roxor-input {
   width: 100%; background: rgba(255, 255, 255, 0.9) !important;
   border: 2px solid var(--roxor-black); padding: 15px; margin-bottom: 1rem;
