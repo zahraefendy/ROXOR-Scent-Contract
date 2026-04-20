@@ -1,4 +1,4 @@
-/* App.css - ROXOR FINAL LUXURY REVISION */
+/* App.css - ROXOR FINAL LUXURY REVISION (ESTETIC VERSION) */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
 :root {
@@ -62,7 +62,7 @@ html, body {
   position: relative;
 }
 
-/* HEADER - LOGO DIPASIN BIAR GAK KEGEDEAN */
+/* HEADER - LOGO DIPASIN */
 .roxor-luxury-header {
   height: var(--header-h);
   background: rgba(255, 255, 255, 0.95);
@@ -84,7 +84,7 @@ html, body {
 }
 
 .header-logo-img { 
-  height: 35px; /* UKURAN PAS BIAR RAPI DI LIST PUTIH */
+  height: 35px;
   width: auto;
   display: block;
 }
@@ -131,18 +131,97 @@ html, body {
   max-width: 1200px;
 }
 
+/* MODIFIKASI CARD JADI LEBIH ESTETIK (GLASSMORPHISM) */
 .roxor-glass-card {
-  background: rgba(255, 255, 255, 0.8) !important;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  padding: 30px;
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(15px) saturate(180%);
+  -webkit-backdrop-filter: blur(15px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 40px 30px;
+  border-radius: 24px;
   flex: 1;
-  min-width: 300px;
+  min-width: 320px;
+  text-align: center;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.roxor-glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.1);
+}
+
+.roxor-glass-card h3 {
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+  margin-bottom: 25px;
+  color: #1a1a1a;
+  text-transform: uppercase;
+}
+
+/* INPUT ESTETIK */
+.luxury-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #000;
+  outline: none;
+  transition: 0.3s;
+  margin-bottom: 15px;
   text-align: center;
 }
 
-/* 3. SIDEBAR - LOGO NGAMBANG DIHAPUS */
+.luxury-input:focus {
+  border-color: #000;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 4px rgba(0,0,0,0.02);
+}
+
+/* BUTTON ESTETIK */
+.luxury-btn {
+  width: 100%;
+  padding: 15px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.luxury-btn:hover {
+  background: #222;
+  letter-spacing: 3px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.luxury-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  letter-spacing: 2px;
+}
+
+/* STATUS MESSAGE */
+.status-msg {
+  margin-top: 15px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* 3. SIDEBAR */
 .roxor-sidebar-overlay {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: rgba(0,0,0,0.5); z-index: 3000;
@@ -154,7 +233,7 @@ html, body {
 }
 
 .sidebar-logo-box {
-  display: none; /* LOGO DI SIDEBAR DIHAPUS BIAR GAK NGAMBANG */
+  display: none; 
 }
 
 /* 3D Visual */

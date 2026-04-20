@@ -151,20 +151,40 @@ function App() {
           <main className="roxor-main-stage">
             <div className="roxor-dashboard">
               <div className="roxor-grid">
-                {/* Card Verifier */}
+                {/* Area Verifikasi dengan Input yang Lebih Bersih */}
                 <div className="roxor-glass-card">
                   <h3>PRODUCT VERIFIER</h3>
-                  <input type="text" id="serialInput" placeholder="RXR-VLT-001" className="luxury-input" />
-                  <button className="luxury-btn" onClick={() => checkProduct(document.getElementById('serialInput').value)}>VERIFY AUTHENTICITY</button>
+                  <input 
+                    type="text" 
+                    id="serialInput" 
+                    placeholder="ENTER SERIAL NUMBER" 
+                    className="luxury-input" 
+                  />
+                  <button 
+                    className="luxury-btn" 
+                    onClick={() => checkProduct(document.getElementById('serialInput').value)}
+                  >
+                    VERIFY AUTHENTICITY
+                  </button>
                   {verifStatus && <p className="status-msg">{verifStatus}</p>}
                 </div>
 
-                {/* Card Minting */}
+                {/* Area Minting NFT Sertifikat */}
                 <div className="roxor-glass-card">
                   <h3>DIGITAL CERTIFICATE</h3>
-                  <input type="text" placeholder="ENTER SERIAL" className="luxury-input" value={mintSerial} onChange={(e) => setMintSerial(e.target.value.toUpperCase())} />
-                  <button className="luxury-btn" onClick={mintSertifikat} disabled={isMinting}>
-                    {isMinting ? "MINTING..." : "MINT NFT"}
+                  <input 
+                    type="text" 
+                    placeholder="RXR-VLT-XXX" 
+                    className="luxury-input" 
+                    value={mintSerial} 
+                    onChange={(e) => setMintSerial(e.target.value.toUpperCase())} 
+                  />
+                  <button 
+                    className="luxury-btn" 
+                    onClick={mintSertifikat} 
+                    disabled={isMinting}
+                  >
+                    {isMinting ? "PROCESSING..." : "MINT NFT CERTIFICATE"}
                   </button>
                 </div>
               </div>
@@ -176,7 +196,7 @@ function App() {
             </div>
           </main>
 
-          {/* SIDEBAR - LOGO SUDAH DIHAPUS BIAR GAK NGAMBANG */}
+          {/* SIDEBAR */}
           {isMenuOpen && (
             <div className="roxor-sidebar-overlay" onClick={() => setIsMenuOpen(false)}>
               <div className="roxor-sidebar" onClick={(e) => e.stopPropagation()}>
