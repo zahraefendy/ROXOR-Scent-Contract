@@ -39,7 +39,8 @@ function App() {
   const [aiResponse, setAiResponse] = useState("Welcome to ROXOR, Sir.");
   const [isAiLoading, setIsAiLoading] = useState(false);
 
-  const nftAddress = "0x36e606395eAf55cECf98200613CA90Ce3919711c"       
+  // UPDATE: Alamat kontrak ROXOR Certificate terbaru lu
+  const nftAddress = "0x564966FE4541625BB11Ab367a749C21482371e4C"       
 
   useEffect(() => {
     const savedLedger = localStorage.getItem('roxor_ledger');
@@ -90,7 +91,6 @@ function App() {
     }, 1200);
   }
 
-  // --- MODIFIKASI FUNGSI MINTING (STABILIZED) ---
   async function mintSertifikat() {
     if (!walletAddress || !mintSerial) {
       alert("Please enter a serial number.");
@@ -101,28 +101,22 @@ function App() {
     try {
       if (!window.ethereum) throw new Error("MetaMask not found");
 
-      // Gunakan BrowserProvider (Ethers v6)
+      // BrowserProvider untuk Ethers v6
       const provider = new ethers.BrowserProvider(window.ethereum);
-      
-      // Minta Signer yang valid
       const signer = await provider.getSigner();
       
-      // Hubungkan ke Kontrak NFT
+      // Hubungkan ke Kontrak NFT dengan ABI baru
       const nftContract = new ethers.Contract(nftAddress, abiNFT, signer);
       
-      // Eksekusi Minting dengan Metadata URL
-      // Sesuaikan nama fungsi di contract lu (mintCertificate)
+      // Eksekusi fungsi mintCertificate sesuai kontrak lu
       const tx = await nftContract.mintCertificate(
         walletAddress, 
         `https://roxor.id/cert/${mintSerial}`
       );
       
-      console.log("Transaction Hash:", tx.hash);
-      
-      // Tunggu sampai transaksi sukses di blockchain
       await tx.wait();
       
-      // Update Vault di Local Storage & State
+      // Update state setelah sukses
       const newNft = { 
         id: Date.now(), 
         name: "VALIANT", 
@@ -138,12 +132,8 @@ function App() {
       setMintSerial("");
       
     } catch (err) { 
-      console.error("Detailed Mint Error:", err);
-      if (err.code === 4001) {
-        alert("Transaction rejected by user.");
-      } else {
-        alert("Blockchain transaction failed. Please check your gas fees.");
-      }
+      console.error("Mint Error:", err);
+      alert(err.code === 4001 ? "Transaction rejected." : "Transaction failed. Make sure you are on the right network.");
     } finally { 
       setIsMinting(false); 
     }
